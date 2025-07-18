@@ -97,22 +97,56 @@ function percentageToGPA(pct) {
 }
 
 // GPA Recalculation (unchanged)
+// async function recalculateStudentGPA(student) {
+//   const logs = await DailyLog.find({ student: student._id });
+//   const validLogs = logs.filter(log => log.percentage > 0 && log.studyTimeMinutes > 0);
+
+//   const totalCredits = student.subjects.reduce((sum, subj) => sum + (subj.creditHours || 0), 0);
+
+//   if (validLogs.length === 0 || totalCredits === 0) {
+//     student.gpa = 0;
+//   } else {
+//     const weightedTotal = validLogs.reduce((sum, log) => sum + (log.percentage * log.studyTimeMinutes), 0);
+//     const totalTime = validLogs.reduce((sum, log) => sum + log.studyTimeMinutes, 0);
+//     const weightedPercentage = weightedTotal / totalTime;
+
+//     student.gpa = percentageToGPA(weightedPercentage).toFixed(2);
+//   }
+// }
+
 async function recalculateStudentGPA(student) {
-  const logs = await DailyLog.find({ student: student._id });
-  const validLogs = logs.filter(log => log.percentage > 0 && log.studyTimeMinutes > 0);
+  let totalCredits = 0;
+  let totalWeightedGPA = 0;
 
-  const totalCredits = student.subjects.reduce((sum, subj) => sum + (subj.creditHours || 0), 0);
+  for (const subj of student.subjects) {
+    // Fetch logs for this subject
+    const logs = await DailyLog.find({
+      student: student._id,
+      subjectName: subj.subjectName
+    });
+    const validLogs = logs.filter(log => log.percentage > 0 && log.studyTimeMinutes > 0);
 
-  if (validLogs.length === 0 || totalCredits === 0) {
-    student.gpa = 0;
-  } else {
+    if (validLogs.length === 0 || !subj.creditHours) continue; // skip subjects with no logs or no credits
+
     const weightedTotal = validLogs.reduce((sum, log) => sum + (log.percentage * log.studyTimeMinutes), 0);
     const totalTime = validLogs.reduce((sum, log) => sum + log.studyTimeMinutes, 0);
-    const weightedPercentage = weightedTotal / totalTime;
+    const weightedPct = weightedTotal / totalTime;
 
-    student.gpa = percentageToGPA(weightedPercentage).toFixed(2);
+    const subjGPA = percentageToGPA(weightedPct);
+    totalWeightedGPA += subjGPA * subj.creditHours;
+    totalCredits += subj.creditHours;
+  }
+
+  if (totalCredits === 0) {
+    student.gpa = 0;
+  } else {
+    student.gpa = (totalWeightedGPA / totalCredits).toFixed(2);
   }
 }
+
+
+
+
 
 // Check if student has logged for a subject before
 exports.hasLoggedSubjectBefore = async (req, res) => {
