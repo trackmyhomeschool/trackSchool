@@ -112,40 +112,9 @@ function Dashboard() {
   };
 
   const getPieData = () => {
-    if (!selectedData) return [];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     console.log("Student data:", selectedData);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    if (!selectedData) return [];
+      
     
     const creditDef = selectedData?.user?.state?.creditDefinition ||
       selectedData?.state?.creditDefinition || '';
