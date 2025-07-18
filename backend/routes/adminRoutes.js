@@ -41,6 +41,7 @@ router.post('/login', (req, res) => {
   }
 });  
 
+
 // Get all users with their student count
 router.get('/users', protect, isAdmin, async (req, res) => {
   try {
@@ -55,7 +56,7 @@ router.get('/users', protect, isAdmin, async (req, res) => {
   }
 });
 
-// Delete user and their students
+
 router.delete('/users/:id', protect, isAdmin, async (req, res) => {
   try {
     const students = await Student.find({ user: req.params.id }, '_id');
