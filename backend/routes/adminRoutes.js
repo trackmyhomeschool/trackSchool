@@ -31,6 +31,7 @@ router.post('/login', (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: 'None',
+
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/'
     });
@@ -39,8 +40,6 @@ router.post('/login', (req, res) => {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 });  
-
-// --- PROTECTED ADMIN ROUTES BELOW --- //
 
 // Get all users with their student count
 router.get('/users', protect, isAdmin, async (req, res) => {
