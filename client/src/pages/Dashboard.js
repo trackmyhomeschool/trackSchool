@@ -45,6 +45,17 @@ function Dashboard() {
   credentials: 'include',
 });
         const data = await res.json();
+        
+        
+
+
+        
+        console.log("Fetched student details:", data); // <<<<<< ADD THIS HERE!
+        
+        
+        
+        
+        
         if (!Array.isArray(data)) throw new Error('Invalid student data received');
         setStudents(data);
         if (data.length > 0) setSelectedStudent(data[0]._id);
@@ -112,7 +123,19 @@ function Dashboard() {
   };
 
   const getPieData = () => {
+
+
+
+
+
+
+
     console.log("Student data:", selectedData);
+    
+    
+    
+    
+    
     if (!selectedData) return [];
       
     
