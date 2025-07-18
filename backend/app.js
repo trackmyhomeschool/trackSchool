@@ -23,7 +23,7 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), web
 
 // 2. All normal middleware/routes AFTER
 app.use(cors({
-  origin: ['https://trackmyhomeschool.com'],
+  origin: 'https://trackmyhomeschool.com',
   credentials: true
 }));
 app.use(express.json());
