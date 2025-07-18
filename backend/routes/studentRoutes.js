@@ -23,7 +23,7 @@ router.get('/:studentId/subjects/:subjectId/log', getTodayLog);
 router.delete('/:id', deleteStudent);
 
 router.post(
-  '/students',
+  '/',
   uploadStudentImage,
   (err, req, res, next) => {
     if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {

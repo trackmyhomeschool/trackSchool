@@ -60,7 +60,7 @@ exports.createLog = async (req, res) => {
     let embedded = student.subjects.find(
       s => s.subjectName.trim().toLowerCase() === subject.subjectName.trim().toLowerCase()
     );
-    if (embedded) {
+    if(embedded){
       const deltaHours = studyTimeMinutes / 60;
       embedded.totalHours = Math.max((embedded.totalHours || 0) + deltaHours, 0);
       embedded.creditHours = calculateCredits(embedded.totalHours, req.user.hoursPerCredit);
