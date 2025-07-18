@@ -16,6 +16,7 @@ const homeschoolResourceRoutes = require('./routes/homeschoolResourceRoutes');
 const adminResourceRoutes = require('./routes/adminResourceRoutes');
 const { webhookHandler } = require('./routes/paymentRoutes');
 const app = express();
+app.set('trust proxy', 1);
 
 // 1. Stripe webhook route BEFORE express.json()
 app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), webhookHandler);
@@ -23,7 +24,7 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), web
 
 // 2. All normal middleware/routes AFTER
 app.use(cors({
-  origin: ['https://trackmyhomeschool.com', 'http://trackmyhomeschool.com'],
+  origin: ['https://trackmyhomeschool.com'],
   credentials: true
 }));
 app.use(express.json());
