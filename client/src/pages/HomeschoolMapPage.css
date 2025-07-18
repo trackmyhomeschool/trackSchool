@@ -1,25 +1,10 @@
+
 .standalone-map-page {
   padding: 20px;
   background-color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.back-button {
-  align-self: flex-start;
-  margin-bottom: 10px;
-  padding: 8px 12px;
-  font-size: 16px;
-  background-color: #eee;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.13s;
-}
-.back-button:active,
-.back-button:focus {
-  background-color: #ddd;
 }
 
 .map-heading {
@@ -71,40 +56,22 @@
   .map-heading {
     font-size: 1.08rem;
   }
-  .back-button {
-    font-size: 15px;
-    padding: 7px 9px;
-  }
 }
 
 @media (max-width: 600px) {
   .standalone-map-page {
     padding: 8px 1vw 2vw 1vw;
   }
-  .back-button {
-    font-size: 14px;
-    padding: 6px 7px;
-  }
   .map-heading {
     font-size: 0.99rem;
   }
   .standalone-map-container,
   .map-container {
-    min-height: 220px;
+    min-height: calc(100vh - 100px); /* Adjust if needed */
+    height: calc(100vh - 100px);
+    margin-top: 10px;
   }
-}
-
-@media (max-width: 450px) {
-  .standalone-map-page {
-    padding: 4px 0 2vw 0;
-  }
-  .map-heading {
-    font-size: 0.92rem;
-  }
-}
-
-/* Map resource detail modals (custom override for mobile) */
-@media (max-width: 600px) {
+  /* Map resource detail modals (custom override for mobile) */
   .map-resource-modal,
   .map-multimodal {
     position: fixed !important;
@@ -123,4 +90,27 @@
   .map-resource-modal img {
     max-height: 70px !important;
   }
+}
+
+@media (max-width: 450px) {
+  .standalone-map-page {
+    padding: 4px 0 2vw 0;
+  }
+  .map-heading {
+    font-size: 0.92rem;
+  }
+}
+
+/* Optional: Add nice touch for scrollbars in modal on mobile */
+.map-multimodal {
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f8fafc;
+}
+.map-multimodal::-webkit-scrollbar {
+  width: 6px;
+  background: #f8fafc;
+}
+.map-multimodal::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
 }

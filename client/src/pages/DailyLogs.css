@@ -1,5 +1,65 @@
 .daily-logs-wrapper {
-  max-width: 800px;       /* Set desired width */
-  margin: 0 auto;         /* Center the content */
-  padding: 20px 15px;
+  padding: 24px 2vw;
+}
+
+.dailylog-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+  padding: 10px 0;
+}
+
+.dailylog-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dailylog-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.dailylog-btn {
+  flex-shrink: 0;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.13s;
+  white-space: nowrap;
+}
+
+.dailylog-btn:active,
+.dailylog-btn:focus {
+  background: #1259a8;
+}
+
+@media (max-width: 500px) {
+  .daily-logs-wrapper {
+    padding: 14px 1vw;
+  }
+  .dailylog-row {
+    gap: 8px;
+    padding: 8px 0;
+    flex-wrap: nowrap;
+  }
+  .dailylog-info {
+    font-size: 15px;
+  }
+  .dailylog-btn {
+    font-size: 14px;
+    padding: 8px 9px;
+  }
 }

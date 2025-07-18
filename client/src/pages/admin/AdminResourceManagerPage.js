@@ -17,14 +17,36 @@ const pageStyles = `
 /* Responsive button row handling */
 @media (max-width: 600px) {
   .admin-btn-row {
-    flex-wrap: nowrap !important;
-    overflow-x: auto;
-    gap: 8px;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    width: 100%;
+  }
+  .admin-btn-row h2 {
+    font-size: 1.1rem !important;
+    margin-bottom: 2px !important;
   }
   .admin-btn-row > div {
-    flex-wrap: nowrap !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    width: 100%;
     gap: 8px;
     overflow-x: auto;
+  }
+  .card,
+  .table-responsive,
+  .table {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 350px !important;
+    margin-left: -16px;
+    border-radius: 0 !important;
+  }
+  .table thead th,
+  .table td {
+    font-size: 13px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
   }
 }
 `;
@@ -224,9 +246,8 @@ const AdminResourceManagerPage = () => {
         className="d-flex align-items-center justify-content-between mb-4 admin-btn-row"
         style={{
           position: "relative",
-          zIndex: 10, // Ensures header/buttons always on top
-          flexWrap: "nowrap",
-          overflowX: "auto"
+          zIndex: 10
+          // Removed flexWrap and overflowX for CSS/media query handling
         }}
       >
         <h2 style={{ fontWeight: 700, letterSpacing: 1 }}>Resource Database</h2>

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './DailyLogs.css';
 import DashboardLayout from '../components/DashboardLayout';
-import { Button, Row, Col, Card } from 'react-bootstrap';
-// ...other imports
+import { Card } from 'react-bootstrap';
 import axios from 'axios';
 import LogDailyModal from '../components/LogDailyModal';
 import CompletionLogModal from '../components/CompletionLogModal';
@@ -64,37 +63,26 @@ function DailyLogs() {
         {students.map((student) => (
           <Card className="mb-3" key={student._id}>
             <Card.Body>
-              <Row className="align-items-center">
-                <Col xs={2} md={1}>
-                  <img
-                    src={
-                      student.profilePicture?.startsWith('/uploads')
-                        ? `${process.env.REACT_APP_API_URL}${student.profilePicture}`
-                        : '/images/default-avatar.jpg'
-                    }
-                    alt="avatar"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                </Col>
-                <Col xs={6} md={4}>
+              <div className="dailylog-row">
+                <img
+                  src={
+                    student.profilePicture?.startsWith('/uploads')
+                      ? `${process.env.REACT_APP_API_URL}${student.profilePicture}`
+                      : '/images/default-avatar.jpg'
+                  }
+                  alt="avatar"
+                  className="dailylog-avatar"
+                />
+                <div className="dailylog-info">
                   <strong>{student.firstName} {student.lastName}</strong>
-                </Col>
-                <Col xs></Col>
-                <Col xs="auto" md={4} className="text-md-end mt-2 mt-md-0">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => openLogModal(student)}
-                  >
-                    Today's Log
-                  </Button>
-                </Col>
-              </Row>
+                </div>
+                <button
+                  className="dailylog-btn"
+                  onClick={() => openLogModal(student)}
+                >
+                  Today's Log
+                </button>
+              </div>
             </Card.Body>
           </Card>
         ))}

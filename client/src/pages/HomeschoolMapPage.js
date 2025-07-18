@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./HomeschoolMapPage.css";
 import DashboardLayout from "../components/DashboardLayout";
@@ -8,7 +7,6 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 const US_CENTER = { lat: 39.8283, lng: -98.5795 };
 
 const HomeschoolMapPage = () => {
-  const navigate = useNavigate();
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const markersRef = useRef([]);
@@ -77,32 +75,40 @@ const HomeschoolMapPage = () => {
     });
     mapInstance.current = map;
 
+    // === Hide modal/details when clicking map background ===
+    map.addListener("click", () => {
+      setSelectedResource(null);
+      setMultiResourceModal(null);
+    });
+
     const resourceMarkers = [];
 
-    const allMarkers = resources.map((resource, idx) => {
-      if (
-        resource.location &&
-        typeof resource.location.lat === "number" &&
-        typeof resource.location.lng === "number"
-      ) {
-        const marker = new window.google.maps.Marker({
-          position: {
-            lat: resource.location.lat,
-            lng: resource.location.lng,
-          },
-          label: "",
-        });
+    const allMarkers = resources
+      .map((resource, idx) => {
+        if (
+          resource.location &&
+          typeof resource.location.lat === "number" &&
+          typeof resource.location.lng === "number"
+        ) {
+          const marker = new window.google.maps.Marker({
+            position: {
+              lat: resource.location.lat,
+              lng: resource.location.lng,
+            },
+            label: "",
+          });
 
-        marker.addListener("click", () => {
-          setSelectedResource(resource);
-          map.panTo({ lat: resource.location.lat, lng: resource.location.lng });
-        });
+          marker.addListener("click", () => {
+            setSelectedResource(resource);
+            map.panTo({ lat: resource.location.lat, lng: resource.location.lng });
+          });
 
-        resourceMarkers.push({ marker, resource });
-        return marker;
-      }
-      return null;
-    }).filter(Boolean);
+          resourceMarkers.push({ marker, resource });
+          return marker;
+        }
+        return null;
+      })
+      .filter(Boolean);
 
     markersRef.current = allMarkers;
 
@@ -113,12 +119,18 @@ const HomeschoolMapPage = () => {
       const markersInCluster = clickedCluster.markers;
       const clusterPosition = clickedCluster.position;
 
-      const positions = markersInCluster.map(m => `${m.getPosition().lat()},${m.getPosition().lng()}`);
+      const positions = markersInCluster.map(
+        (m) => `${m.getPosition().lat()},${m.getPosition().lng()}`
+      );
       const allSamePosition = positions.every((v) => v === positions[0]);
 
       if (allSamePosition && markersInCluster.length > 1) {
         const resourcesAtPoint = resourceMarkers
-          .filter(({ marker }) => positions[0] === `${marker.getPosition().lat()},${marker.getPosition().lng()}`)
+          .filter(
+            ({ marker }) =>
+              positions[0] ===
+              `${marker.getPosition().lat()},${marker.getPosition().lng()}`
+          )
           .map(({ resource }) => resource);
         setMultiResourceModal({
           resources: resourcesAtPoint,
@@ -163,7 +175,9 @@ const HomeschoolMapPage = () => {
     const filtered = allResources.filter((res) => {
       const name = res.title?.toLowerCase() || "";
       const state = res.state?.toLowerCase() || "";
-      return terms.every(term => name.includes(term) || state.includes(term));
+      return terms.every(
+        (term) => name.includes(term) || state.includes(term)
+      );
     });
 
     setResources(filtered);
@@ -184,24 +198,25 @@ const HomeschoolMapPage = () => {
   return (
     <DashboardLayout>
       <div className="standalone-map-page">
-        <div style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
-          flexWrap: "wrap"
-        }}>
-          <button className="back-button" onClick={() => navigate(-1)}>
-            ← Back
-          </button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+            flexWrap: "wrap",
+          }}
+        >
+          {/* Back button removed as per request */}
           <form
             onSubmit={handleSearch}
             style={{
               display: "flex",
               flexDirection: "row",
               gap: 6,
-              flexWrap: "wrap"
-            }}>
+              flexWrap: "wrap",
+            }}
+          >
             <input
               type="text"
               placeholder="Search by resource name or state"
@@ -214,7 +229,7 @@ const HomeschoolMapPage = () => {
                 minWidth: 120,
                 width: "auto",
                 flex: "1 1 160px",
-                fontSize: "15px"
+                fontSize: "15px",
               }}
               autoComplete="off"
               inputMode="search"
@@ -243,14 +258,12 @@ const HomeschoolMapPage = () => {
         <h2 className="map-heading" style={{ marginTop: 8 }}>
           Homeschool Resource Map
         </h2>
-        <div
-          className="standalone-map-container"
-          style={{ marginTop: 0 }}
-        >
+        <div className="standalone-map-container" style={{ marginTop: 0 }}>
           <div ref={mapRef} className="map-container" />
           {/* Single resource detail */}
           {selectedResource && (
-            <div className="map-resource-modal"
+            <div
+              className="map-resource-modal"
               style={{
                 position: "fixed",
                 top: 90,
@@ -262,7 +275,8 @@ const HomeschoolMapPage = () => {
                 maxWidth: 380,
                 padding: 24,
                 minWidth: 220,
-              }}>
+              }}
+            >
               <button
                 onClick={() => setSelectedResource(null)}
                 style={{
@@ -305,7 +319,8 @@ const HomeschoolMapPage = () => {
                 </a>
               </div>
               <div style={{ fontSize: 15, margin: "4px 0" }}>
-                <b>Categories:</b> {formatCategories(selectedResource.categories)}
+                <b>Categories:</b>{" "}
+                {formatCategories(selectedResource.categories)}
               </div>
               <div style={{ fontSize: 15 }}>
                 <b>Score:</b> {selectedResource.totalScore ?? "N/A"}
@@ -333,7 +348,8 @@ const HomeschoolMapPage = () => {
           )}
           {/* Multi-resource modal for clusters at one spot */}
           {multiResourceModal && (
-            <div className="map-multimodal"
+            <div
+              className="map-multimodal"
               style={{
                 position: "fixed",
                 top: 90,
@@ -347,7 +363,8 @@ const HomeschoolMapPage = () => {
                 minWidth: 200,
                 maxHeight: "70vh",
                 overflowY: "auto",
-              }}>
+              }}
+            >
               <button
                 onClick={() => setMultiResourceModal(null)}
                 style={{
@@ -377,7 +394,9 @@ const HomeschoolMapPage = () => {
                     }}
                   >
                     <div style={{ fontWeight: "bold" }}>{res.title}</div>
-                    <div style={{ color: "#666", fontSize: 14 }}>{res.categoryName}</div>
+                    <div style={{ color: "#666", fontSize: 14 }}>
+                      {res.categoryName}
+                    </div>
                     <div style={{ fontSize: 13 }}>{res.address}</div>
                     <button
                       style={{
@@ -388,7 +407,7 @@ const HomeschoolMapPage = () => {
                         color: "#fff",
                         border: "none",
                         fontSize: 13,
-                        cursor: "pointer"
+                        cursor: "pointer",
                       }}
                       onClick={() => {
                         setSelectedResource(res);
