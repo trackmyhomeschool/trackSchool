@@ -62,7 +62,6 @@ exports.createLog = async (req, res) => {
       s => s.subjectName.trim().toLowerCase() === subject.subjectName.trim().toLowerCase()
     );
     const user = await User.findById(req.user.id);
-    console.log('Student:', student.firstName, '| hoursPerCredit:', user.hoursPerCredit);
     if(embedded){
       const deltaHours = studyTimeMinutes / 60;
       embedded.totalHours = Math.max((embedded.totalHours || 0) + deltaHours, 0);
