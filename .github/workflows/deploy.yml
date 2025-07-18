@@ -11,8 +11,9 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.http://138.197.33.231}}
-          username: ${{ secrets.root}}
-          key: ${{ secrets.ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIjaQguMY2VgIBJwVs7YfkgYbNUpuaZjeV/EpBX3H9UN https://trackmyhomeschool.com}}
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
           script: |
-            /root/trackSchool/deploy.sh
+            /var/www/homeschool/deploy.sh
+
