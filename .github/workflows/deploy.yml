@@ -17,4 +17,3 @@ jobs:
           port: 22 
           script: |
             /var/www/homeschool/deploy.sh
-
