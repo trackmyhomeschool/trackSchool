@@ -16,4 +16,4 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           port: 22 
           script: |
-            /var/www/homeschool/deploy.sh
+            /root/trackSchool/deploy.sh
