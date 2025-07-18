@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-
+    //setting the cookies
     res.cookie('token', token, {
       httpOnly: true,
       secure: true,
