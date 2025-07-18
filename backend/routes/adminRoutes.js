@@ -19,8 +19,6 @@ function isAdmin(req, res, next) {
 
 // Admin login
 router.post('/login', (req, res) => {
-  console.log("req.secure:", req.secure);
-  console.log("req.headers['x-forwarded-proto']:", req.headers['x-forwarded-proto']);
   const { username, password } = req.body;
 
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
