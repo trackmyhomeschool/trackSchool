@@ -37,7 +37,8 @@ try:
 except Exception as e:
     raise RuntimeError(f"Font loading failed: {e}")
 
-@app.route("/diploma")
+@app.route('/diploma', methods=['GET'])
+@app.route('/diploma/', methods=['GET'])
 def generate_diploma():
     name = request.args.get("name", "Student Name")
     state = request.args.get("state", "Your State")
