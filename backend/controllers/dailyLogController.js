@@ -1,5 +1,6 @@
 const DailyLog = require('../models/DailyLog');
 const Student = require('../models/Student');
+const User = require('../models/User');
 
 // Create or Update a Daily Log
 exports.createLog = async (req, res) => {
@@ -60,11 +61,12 @@ exports.createLog = async (req, res) => {
     let embedded = student.subjects.find(
       s => s.subjectName.trim().toLowerCase() === subject.subjectName.trim().toLowerCase()
     );
-    console.log('Student:', student.firstName, '| hoursPerCredit:', req.user.hoursPerCredit);
+    const user = await User.findById(req.user.id);
+    console.log('Student:', student.firstName, '| hoursPerCredit:', user.hoursPerCredit);
     if(embedded){
       const deltaHours = studyTimeMinutes / 60;
       embedded.totalHours = Math.max((embedded.totalHours || 0) + deltaHours, 0);
-      embedded.creditHours = calculateCredits(embedded.totalHours, req.user.hoursPerCredit);
+      embedded.creditHours = calculateCredits(embedded.totalHours, user.hoursPerCredit);
     }
 
     await recalculateStudentGPA(student);
