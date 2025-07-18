@@ -45,17 +45,6 @@ function Dashboard() {
   credentials: 'include',
 });
         const data = await res.json();
-        
-        
-
-
-        
-        console.log("Fetched student details:", data); // <<<<<< ADD THIS HERE!
-        
-        
-        
-        
-        
         if (!Array.isArray(data)) throw new Error('Invalid student data received');
         setStudents(data);
         if (data.length > 0) setSelectedStudent(data[0]._id);
@@ -122,42 +111,32 @@ function Dashboard() {
       .sort((a, b) => new Date(`1 ${a.month} 2020`) - new Date(`1 ${b.month} 2020`));
   };
 
-  const getPieData = () => {
+const getPieData = () => {
+  if (!selectedData) return [];
 
+  // If creditDef is undefined or blank, default to hours (for most users)
+  const creditDef =
+    selectedData?.user?.state?.creditDefinition ||
+    selectedData?.state?.creditDefinition ||
+    '';
 
-
-
-
-
-
-    console.log("Student data:", selectedData);
-    
-    
-    
-    
-    
-    if (!selectedData) return [];
-      
-    
-    const creditDef = selectedData?.user?.state?.creditDefinition ||
-      selectedData?.state?.creditDefinition || '';
-
-    if (creditDef === 'Carnegie Unit' || creditDef === 'Local') {
-      // By hours (as before)
-      return selectedData.subjects?.map(sub => ({
+  // Fallback: if no creditDef, just always show hours
+  if (!creditDef || creditDef === 'Carnegie Unit' || creditDef === 'Local') {
+    return selectedData.subjects?.map(sub => ({
+      name: sub.subjectName || 'Unnamed',
+      value: Math.round(sub.totalHours || 0)
+    })) || [];
+  } else {
+    // By completed credits (unlikely for your data)
+    return selectedData.subjects
+      ?.filter(sub => sub.isCompleted)
+      .map(sub => ({
         name: sub.subjectName || 'Unnamed',
-        value: Math.round(sub.totalHours || 0)
+        value: Number(sub.creditHours) || 0
       })) || [];
-    } else {
-      // By completed credits
-      return selectedData.subjects
-        ?.filter(sub => sub.isCompleted)
-        .map(sub => ({
-          name: sub.subjectName || 'Unnamed',
-          value: Number(sub.creditHours) || 0
-        })) || [];
-    }
-  };
+  }
+};
+
 
 
   const getActivities = () => selectedData?.activities?.slice(0, 5).map(a => a.heading) || [];
