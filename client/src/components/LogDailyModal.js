@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { Modal, Button, Form, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import './LogDailyModal.css';
 
 function LogDailyModal({ show, handleClose, student, onRefresh }) {
+  if (!student) return null;
+
   const [subjectInput, setSubjectInput] = useState('');
+  const [selectedCombo, setSelectedCombo] = useState('');
   const [comment, setComment] = useState('');
   const [percentage, setPercentage] = useState('');
   const [studyTime, setStudyTime] = useState('');
@@ -12,78 +15,116 @@ function LogDailyModal({ show, handleClose, student, onRefresh }) {
   const [subjectOptions, setSubjectOptions] = useState([]);
   const [message, setMessage] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  // Update subjects from student prop
   useEffect(() => {
-    if (student) {
-      setSubjectOptions(student.subjects?.map(s => s.subjectName) || []);
+    if (student && Array.isArray(student.subjects)) {
+      setSubjectOptions(
+        student.subjects
+          .map(s => (typeof s.subjectName === 'string' ? s.subjectName : null))
+          .filter(Boolean)
+      );
+    } else {
+      setSubjectOptions([]);
     }
   }, [student]);
 
-  if (!student) return null;
+  // ComboBox selection updates text field
+  useEffect(() => {
+    if (selectedCombo) setSubjectInput(selectedCombo);
+  }, [selectedCombo]);
 
+  // Reset modal fields on open/close
+  useEffect(() => {
+    if (show) {
+      setSubjectInput('');
+      setSelectedCombo('');
+      setComment('');
+      setPercentage('');
+      setStudyTime('');
+      setStatus('');
+      setMessage(null);
+    }
+  }, [show]);
+
+  // Check if current subjectInput matches any subject (case-insensitive)
+  const isRegisteredSubject = subjectOptions.some(
+    s =>
+      ((s || '').trim().toLowerCase() === (subjectInput || '').trim().toLowerCase())
+  );
+
+  // Save log and fetch updated student
   const handleSave = async () => {
     setMessage(null);
-    if (!subjectInput.trim()) {
+
+    if (!(subjectInput || '').trim()) {
       setMessage('Subject is required.');
       return;
     }
-    const inputTrimmed = subjectInput.trim();
-    const alreadyRegistered = subjectOptions.some(
-      s => s.trim().toLowerCase() === inputTrimmed.toLowerCase()
-    );
-    if (!alreadyRegistered) {
+
+    // If subject is not registered, ask for confirmation to create
+    if (!isRegisteredSubject) {
       setShowCreateModal(true);
       return;
     }
 
-    try {
-      await saveLog(inputTrimmed);
-      if (typeof onRefresh === 'function') onRefresh();
-    } catch (err) {
-      setMessage('❌ Error saving log.');
-    }
+    await saveLog(subjectInput.trim());
   };
 
+  // Save log function
   const saveLog = async (subjectName) => {
+    setLoading(true);
     try {
       const payload = {
         studentId: student._id,
-        subjectName: subjectName.trim(),
-        comment: comment.trim() || 'No comment',
+        subjectName: (subjectName || '').trim(),
+        comment: (comment || '').trim() || 'No comment',
         studyTimeMinutes: studyTime ? parseInt(studyTime) : 0,
         percentage: parseInt(student.grade) > 5 ? parseFloat(percentage) : undefined,
         status: parseInt(student.grade) <= 5 ? status : null,
       };
 
-      
       await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/dailyLogs`,
-    payload,
-  { withCredentials: true }
-);
-
+        `${process.env.REACT_APP_API_URL}/api/dailyLogs`,
+        payload,
+        { withCredentials: true }
+      );
       setMessage('✓ Log saved!');
+      setShowCreateModal(false);
+
+      // Refresh student (for subject list consistency)
+      const { data: updatedStudent } = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/students/${student._id}`,
+        { withCredentials: true }
+      );
+      if (typeof onRefresh === 'function') onRefresh(updatedStudent);
+
+      // Add this for instant local update!
+      setSubjectOptions(
+        Array.isArray(updatedStudent.subjects)
+          ? updatedStudent.subjects
+              .map(s => (typeof s.subjectName === 'string' ? s.subjectName : null))
+              .filter(Boolean)
+          : []
+      );
+
       setSubjectInput('');
+      setSelectedCombo('');
       setComment('');
       setPercentage('');
       setStatus('');
       setStudyTime('');
-      setShowCreateModal(false);
     } catch (err) {
       setMessage('❌ Error saving log. Please ensure subject is valid.');
       setShowCreateModal(false);
     }
+    setLoading(false);
   };
 
+  // Create/register new subject and log
   const handleCreateSubject = async () => {
-    try {
-      await saveLog(subjectInput.trim());
-      if (typeof onRefresh === 'function') onRefresh();
-    } catch (err) {
-      setMessage('❌ Failed to create/register subject.');
-    } finally {
-      setShowCreateModal(false);
-    }
+    await saveLog(subjectInput.trim());
   };
 
   return (
@@ -92,15 +133,34 @@ function LogDailyModal({ show, handleClose, student, onRefresh }) {
         <Modal.Title>Log Daily Activity</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {message && <Alert variant="info">{message}</Alert>}
+        {message && <Alert variant={message.startsWith('✓') ? 'success' : 'info'}>{message}</Alert>}
 
+        {/* Subject ComboBox */}
+        <Form.Group className="mb-2">
+          <Form.Label>Choose Subject</Form.Label>
+          <Form.Select
+            value={selectedCombo}
+            onChange={e => setSelectedCombo(e.target.value)}
+          >
+            <option value="">-- Select Subject --</option>
+            {subjectOptions.map((s, idx) => (
+              <option key={idx} value={s}>{s}</option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+
+        {/* Subject Input */}
         <Form.Group controlId="subjectInput" className="mb-3">
           <Form.Label>Subject</Form.Label>
           <Form.Control
             list="subjectList"
             placeholder="Type or select subject"
             value={subjectInput}
-            onChange={(e) => setSubjectInput(e.target.value)}
+            onChange={e => {
+              setSubjectInput(e.target.value);
+              setSelectedCombo(''); // If user types, reset ComboBox
+            }}
+            autoComplete="off"
           />
           <datalist id="subjectList">
             {subjectOptions.map((s, idx) => (
@@ -167,11 +227,23 @@ function LogDailyModal({ show, handleClose, student, onRefresh }) {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" onClick={handleClose} disabled={loading}>
           Close
         </Button>
-        <Button variant="primary" onClick={handleSave}>
-          Save Log
+        <Button
+          variant={isRegisteredSubject ? "primary" : "success"}
+          onClick={handleSave}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <Spinner animation="border" size="sm" /> Saving...
+            </>
+          ) : isRegisteredSubject ? (
+            "Save Log"
+          ) : (
+            "New Log"
+          )}
         </Button>
       </Modal.Footer>
 
@@ -181,14 +253,14 @@ function LogDailyModal({ show, handleClose, student, onRefresh }) {
           <Modal.Title>Register Subject?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          The subject "{subjectInput}" is not registered for this student. Do you want to proceed and register it?
+          The subject "<b>{subjectInput}</b>" is not registered for this student. Do you want to proceed and register it?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
             Cancel
           </Button>
           <Button variant="success" onClick={handleCreateSubject}>
-            Yes, Register
+            Yes, Register &amp; Save Log
           </Button>
         </Modal.Footer>
       </Modal>
