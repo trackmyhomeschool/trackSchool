@@ -240,10 +240,7 @@ const getPieData = () => {
 
         <div style={{ flex: 1, minWidth: '300px' }}>
           <h5 className="mb-2">
-            {selectedData?.user?.state?.creditDefinition === "Carnegie Unit" ||
-              selectedData?.user?.state?.creditDefinition === "Local"
-              ? "Study Hours by Subject"
-              : "Credits Completed by Subject"}
+            Study Hours by Subject
           </h5>
 
 
