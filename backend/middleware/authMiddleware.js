@@ -13,7 +13,7 @@ const protect = (req, res, next) => {
       id: decoded.id,
       username: decoded.username,
       role: decoded.role,
-       email: decoded.email
+      email: decoded.email
     };
     next();
   } catch (err) {
