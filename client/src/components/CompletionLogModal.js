@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function CompletionLogModal({ show, handleClose, student, onRefresh }) {
   if (!student) return null;
 
+  const navigate = useNavigate();
   const [subjectInput, setSubjectInput] = useState('');
   const [selectedCombo, setSelectedCombo] = useState('');
   const [isCompleted, setIsCompleted] = useState(null);
@@ -196,26 +198,42 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
         </Form.Group>
       </Modal.Body>
 
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose} disabled={loading}>
-          Close
-        </Button>
-        <Button
-          variant={isRegisteredSubject ? "primary" : "success"}
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <Spinner animation="border" size="sm" /> Saving...
-            </>
-          ) : isRegisteredSubject ? (
-            "Save Status"
-          ) : (
-            "New Status"
-          )}
-        </Button>
-      </Modal.Footer>
+    
+    <Modal.Footer className="d-flex justify-content-between align-items-center">
+  <div>
+    <Button
+      variant="outline-info"
+      onClick={() => {
+        navigate(`/students?view=${student._id}`);
+      }}
+      disabled={loading}
+    >
+      See Logs
+    </Button>
+  </div>
+  <div>
+    <Button variant="secondary" onClick={handleClose} disabled={loading}>
+      Close
+    </Button>
+    <Button
+      variant={isRegisteredSubject ? "primary" : "success"}
+      onClick={handleSave}
+      disabled={loading}
+      className="ms-2"
+    >
+      {loading ? (
+        <>
+          <Spinner animation="border" size="sm" /> Saving...
+        </>
+      ) : isRegisteredSubject ? (
+        "Save Status"
+      ) : (
+        "New Status"
+      )}
+    </Button>
+  </div>
+</Modal.Footer>
+
 
       {/* Register Subject Modal */}
       <Modal

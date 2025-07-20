@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import './LogDailyModal.css';
+import { useNavigate } from 'react-router-dom';
+
 
 function LogDailyModal({ show, handleClose, student, onRefresh }) {
   if (!student) return null;
@@ -16,7 +18,7 @@ function LogDailyModal({ show, handleClose, student, onRefresh }) {
   const [message, setMessage] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
+const navigate = useNavigate();
   // Update subjects from student prop
   useEffect(() => {
     if (student && Array.isArray(student.subjects)) {
@@ -226,26 +228,41 @@ function LogDailyModal({ show, handleClose, student, onRefresh }) {
         </Form.Group>
       </Modal.Body>
 
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose} disabled={loading}>
-          Close
-        </Button>
-        <Button
-          variant={isRegisteredSubject ? "primary" : "success"}
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <Spinner animation="border" size="sm" /> Saving...
-            </>
-          ) : isRegisteredSubject ? (
-            "Save Log"
-          ) : (
-            "New Log"
-          )}
-        </Button>
-      </Modal.Footer>
+<Modal.Footer className="d-flex justify-content-between align-items-center">
+  <div>
+    <Button
+      variant="outline-info"
+      onClick={() => {
+        navigate(`/students?view=${student._id}`);
+      }}
+      disabled={loading}
+    >
+      See Logs
+    </Button>
+  </div>
+  <div>
+    <Button variant="secondary" onClick={handleClose} disabled={loading}>
+      Close
+    </Button>
+    <Button
+      variant={isRegisteredSubject ? "primary" : "success"}
+      onClick={handleSave}
+      disabled={loading}
+      className="ms-2"
+    >
+      {loading ? (
+        <>
+          <Spinner animation="border" size="sm" /> Saving...
+        </>
+      ) : isRegisteredSubject ? (
+        "Save Log"
+      ) : (
+        "New Log"
+      )}
+    </Button>
+  </div>
+</Modal.Footer>
+
 
       {/* Register Subject Modal */}
       <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)} centered backdrop="static">

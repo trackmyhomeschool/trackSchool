@@ -8,6 +8,11 @@ import CompletionViewModal from '../components/CompletionViewModal';
 import axios from 'axios';
 import './Students.css';
 
+
+import { useLocation, useNavigate } from 'react-router-dom';
+
+
+
 const gradeLabels = {
   0: "Kindergarten",
   1: "1st Grade",
@@ -37,6 +42,12 @@ function useDashboardSearch() {
 }
 
 function Students() {
+
+  const location = useLocation();
+const navigate = useNavigate();
+
+
+
   const [students, setStudents] = useState([]);
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [showViewStudentModal, setShowViewStudentModal] = useState(false);
@@ -62,6 +73,23 @@ function Students() {
       console.error('Failed to fetch students:', err.message);
     }
   };
+
+
+
+
+useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const viewId = params.get('view');
+  if (viewId && students.length > 0) {
+    const stu = students.find(s => s._id === viewId);
+    if (stu) {
+      handleViewStudent(stu);
+      // Optionally, remove query param after opening
+      navigate('/students', { replace: true });
+    }
+  }
+}, [location.search, students]);
+
 
   const fetchUserState = async () => {
     try {
