@@ -18,8 +18,7 @@ const { webhookHandler } = require('./routes/paymentRoutes');
 const app = express();
 app.set('trust proxy', 1);
 
-app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), webhookHandler);
-
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
 // 2. All normal middleware/routes AFTER
 app.use(cors({
