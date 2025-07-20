@@ -76,19 +76,29 @@ const navigate = useNavigate();
 
 
 
-
 useEffect(() => {
   const params = new URLSearchParams(location.search);
   const viewId = params.get('view');
   if (viewId && students.length > 0) {
-    const stu = students.find(s => s._id === viewId);
-    if (stu) {
-      handleViewStudent(stu);
-      // Optionally, remove query param after opening
-      navigate('/students', { replace: true });
-    }
+    const fetchAndShow = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/students/${viewId}`);
+        setSelectedStudent(res.data);
+        if (creditDefinition === 'Carnegie Unit') {
+          setShowViewStudentModal(true);
+        } else {
+          setShowCompletionModal(true);
+        }
+        navigate('/students', { replace: true });
+      } catch (err) {
+        console.error('Error fetching student for modal:', err);
+      }
+    };
+    fetchAndShow();
   }
-}, [location.search, students]);
+}, [location.search, creditDefinition]);
+
+
 
 
   const fetchUserState = async () => {
