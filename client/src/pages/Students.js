@@ -25,6 +25,8 @@ const gradeLabels = {
   8: "8th Grade",
   9: "9th Grade",
   10: "10th Grade",
+  11: "11th Grade",
+  12:"12th Grade"
 };
 
 // 🔥 Custom hook to watch the dashboard search bar!

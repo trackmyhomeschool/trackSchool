@@ -14,7 +14,6 @@ router.post('/create-checkout-session', protect, async (req, res) => {
   else return res.status(400).json({ error: "Invalid plan" });
 
   try {
-    console.log(`[Stripe Checkout] Creating session for user ${req.user.email}, plan: ${plan}, priceId: ${priceId}`);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
@@ -64,7 +63,7 @@ const webhookHandler = async (req, res) => {
   let event;
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    console.log(`[Stripe Webhook] Event received: ${event.type}`);
+    
   } catch (err) {
     console.error('[Stripe Webhook] Signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -78,7 +77,7 @@ const webhookHandler = async (req, res) => {
       let subscription;
       try {
         subscription = await stripe.subscriptions.retrieve(subscriptionId);
-        console.log("[Webhook] Retrieved subscription:", subscription.id, "status:", subscription.status);
+        
       } catch (err) {
         console.warn("[Webhook] Could not retrieve subscription:", subscriptionId, err.message);
       }
@@ -92,7 +91,7 @@ const webhookHandler = async (req, res) => {
           : undefined,
         cancelAtPeriodEnd: subscription?.cancel_at_period_end || false // <-- Set this!
       });
-      console.log(`[Webhook] User ${userId} set to subscribed!`);
+     
     }
 
     if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
@@ -100,7 +99,6 @@ const webhookHandler = async (req, res) => {
       const status = subscription.status;
       const subscriptionId = subscription.id;
       const cancelAtPeriodEnd = subscription.cancel_at_period_end;
-      console.log(`[Webhook] Subscription ${subscriptionId} updated. New status: ${status}, cancel_at_period_end: ${cancelAtPeriodEnd}`);
       await User.findOneAndUpdate(
         { subscriptionId },
         {

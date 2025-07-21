@@ -28,6 +28,14 @@
   font-weight: 600;
 }
 
+/* New: Button group for right-alignment and spacing */
+.dailylog-btn-group {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Existing */
 .dailylog-btn {
   flex-shrink: 0;
   background: #1976d2;
@@ -46,6 +54,7 @@
   background: #1259a8;
 }
 
+/* Responsive styles */
 @media (max-width: 500px) {
   .daily-logs-wrapper {
     padding: 14px 1vw;
@@ -61,5 +70,8 @@
   .dailylog-btn {
     font-size: 14px;
     padding: 8px 9px;
+  }
+  .dailylog-btn-group {
+    gap: 0.3rem;
   }
 }
