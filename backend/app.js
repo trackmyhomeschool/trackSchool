@@ -16,7 +16,11 @@ const homeschoolResourceRoutes = require('./routes/homeschoolResourceRoutes');
 const adminResourceRoutes = require('./routes/adminResourceRoutes');
 const { webhookHandler } = require('./routes/paymentRoutes');
 const app = express();
+
 app.set('trust proxy', 1);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
@@ -41,7 +45,6 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/homeschoolresources', homeschoolResourceRoutes);
 app.use('/api/homeschoolresources', adminResourceRoutes);
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Default route
 app.get('/', (req, res) => {
