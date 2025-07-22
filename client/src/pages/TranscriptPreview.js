@@ -5,6 +5,21 @@ import { toPng } from 'html-to-image';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
+function getGradeAndGPA(percent) {
+  if (percent >= 97) return { grade: "A+", gpa: 4.0 };
+  if (percent >= 93) return { grade: "A", gpa: 4.0 };
+  if (percent >= 90) return { grade: "A-", gpa: 3.7 };
+  if (percent >= 87) return { grade: "B+", gpa: 3.3 };
+  if (percent >= 83) return { grade: "B", gpa: 3.0 };
+  if (percent >= 80) return { grade: "B-", gpa: 2.7 };
+  if (percent >= 77) return { grade: "C+", gpa: 2.3 };
+  if (percent >= 73) return { grade: "C", gpa: 2.0 };
+  if (percent >= 70) return { grade: "C-", gpa: 1.7 };
+  if (percent >= 67) return { grade: "D+", gpa: 1.3 };
+  if (percent >= 65) return { grade: "D", gpa: 1.0 };
+  return { grade: "E/F", gpa: 0.0 };
+}
+
 function TranscriptPreview() {
   const ref = useRef();
   const { id } = useParams();
@@ -12,14 +27,6 @@ function TranscriptPreview() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-
-  const calculateGPAFromPercent = (percent) => {
-    if (percent >= 90) return 4.0;
-    if (percent >= 80) return 3.0;
-    if (percent >= 70) return 2.0;
-    if (percent >= 60) return 1.0;
-    return 0.0;
-  };
 
   const exportToImage = () => {
     if (!ref.current) return;
@@ -39,7 +46,6 @@ function TranscriptPreview() {
         const [studentRes, userRes] = await Promise.all([
          axios.get(`${process.env.REACT_APP_API_URL}/api/students/${id}`, { withCredentials: true }),
          axios.get(`${process.env.REACT_APP_API_URL}/api/users/me`, { withCredentials: true })
-
         ]);
         setStudent(studentRes.data);
         setUser(userRes.data);
@@ -59,8 +65,6 @@ function TranscriptPreview() {
     return <DashboardLayout><p className="text-danger text-center p-5">{error}</p></DashboardLayout>;
 
   const gradeNum = parseInt(student.grade);
-
-  // Total credits logic (respects creditDef)
   const creditDef = user?.state?.creditDefinition || '';
   const isPrimary = !isNaN(gradeNum) && gradeNum <= 5;
 
@@ -79,6 +83,94 @@ function TranscriptPreview() {
       return sum + (subj.isCompleted ? (subj.creditHours || 0) : 0);
     }
   }, 0);
+
+  // GPA calculation for grades 6+ only, using weighted average of course GPA by credits
+  let cumulativeGPA = null;
+  let courseRows = [];
+  if ((creditDef === 'Carnegie Unit' || creditDef === 'Local') && gradeNum >= 6) {
+    let totalWeightedGPA = 0;
+    let totalEarnedCredits = 0;
+    courseRows = student.subjects.map((subj, idx) => {
+      const credit = subj.creditHours || 0;
+      const logs = subj.dailyLogs || [];
+      let percent = null;
+      if (subj.totalMarks > 0 && subj.obtainedMarks >= 0) {
+        percent = (subj.obtainedMarks / subj.totalMarks) * 100;
+      }
+      if (percent === null || isNaN(percent)) {
+        const validLogs = logs.filter(log => typeof log.percentage === 'number');
+        if (validLogs.length > 0) {
+          const sum = validLogs.reduce((acc, log) => acc + log.percentage, 0);
+          percent = sum / validLogs.length;
+        }
+      }
+      let gradeInfo = { grade: "Incomplete", gpa: "–" };
+      let earnedCredits = "0.00";
+      if (percent != null) {
+        gradeInfo = getGradeAndGPA(percent);
+        earnedCredits = credit.toFixed(2);
+        totalWeightedGPA += gradeInfo.gpa * credit;
+        totalEarnedCredits += credit;
+      }
+      return (
+        <div className="table-row" key={idx}>
+          <div className="w-50">{subj.subjectName}</div>
+          <div>{percent != null ? `${Math.round(percent)}% (${gradeInfo.grade})` : "Incomplete"}</div>
+          <div>{earnedCredits}</div>
+          <div>{gradeInfo.gpa !== "–" ? gradeInfo.gpa.toFixed(2) : "–"}</div>
+        </div>
+      );
+    });
+    cumulativeGPA = totalEarnedCredits > 0 ? (totalWeightedGPA / totalEarnedCredits) : 0;
+  } else {
+    // For lower grades or other credit types
+    courseRows = student.subjects.map((subj, idx) => {
+      const credit = subj.creditHours || 0;
+      const logs = subj.dailyLogs || [];
+      let percent = null;
+      if (subj.totalMarks > 0 && subj.obtainedMarks >= 0) {
+        percent = (subj.obtainedMarks / subj.totalMarks) * 100;
+      }
+      if (percent === null || isNaN(percent)) {
+        const validLogs = logs.filter(log => typeof log.percentage === 'number');
+        if (validLogs.length > 0) {
+          const sum = validLogs.reduce((acc, log) => acc + log.percentage, 0);
+          percent = sum / validLogs.length;
+        }
+      }
+      let gradeInfo = { grade: "Incomplete", gpa: "–" };
+      let earnedCredits = "0.00";
+      if (creditDef === 'Carnegie Unit' || creditDef === 'Local') {
+        if (!isNaN(gradeNum) && gradeNum < 6) {
+          const passCount = logs.filter(l => l.status === 'pass').length;
+          const failCount = logs.filter(l => l.status === 'fail').length;
+          const isPass = passCount >= failCount;
+          const finalGrade = logs.length > 0 ? (isPass ? 'Pass' : 'Fail') : 'Incomplete';
+          earnedCredits = (finalGrade === 'Pass' ? credit.toFixed(2) : '0.00');
+          return (
+            <div className="table-row" key={idx}>
+              <div className="w-50">{subj.subjectName}</div>
+              <div>{finalGrade}</div>
+              <div>{earnedCredits}</div>
+              <div>–</div>
+            </div>
+          );
+        }
+      }
+      if (percent != null) {
+        gradeInfo = getGradeAndGPA(percent);
+        earnedCredits = credit.toFixed(2);
+      }
+      return (
+        <div className="table-row" key={idx}>
+          <div className="w-50">{subj.subjectName}</div>
+          <div>{percent != null ? `${Math.round(percent)}% (${gradeInfo.grade})` : "Incomplete"}</div>
+          <div>{earnedCredits}</div>
+          <div>{gradeInfo.gpa !== "–" ? gradeInfo.gpa.toFixed(2) : "–"}</div>
+        </div>
+      );
+    });
+  }
 
   return (
     <DashboardLayout>
@@ -108,7 +200,7 @@ function TranscriptPreview() {
               <div className="w-50">Course</div>
               <div>
                 {(creditDef === 'Carnegie Unit' || creditDef === 'Local')
-                  ? (gradeNum >= 6 ? 'Final Grade' : 'Pass/Fail')
+                  ? (gradeNum >= 6 ? 'Final Grade (Letter)' : 'Pass/Fail')
                   : 'Status'}
               </div>
               <div>Credits Earned</div>
@@ -118,59 +210,7 @@ function TranscriptPreview() {
                   : '—'}
               </div>
             </div>
-
-            {student.subjects.map((subj, idx) => {
-              const credit = subj.creditHours || 0;
-              const logs = subj.dailyLogs || [];
-
-              let percent = null;
-              if (subj.totalMarks > 0 && subj.obtainedMarks >= 0) {
-                percent = (subj.obtainedMarks / subj.totalMarks) * 100;
-              }
-              if (percent === null || isNaN(percent)) {
-                const validLogs = logs.filter(log => typeof log.percentage === 'number');
-                if (validLogs.length > 0) {
-                  const sum = validLogs.reduce((acc, log) => acc + log.percentage, 0);
-                  percent = sum / validLogs.length;
-                }
-              }
-
-              let finalGrade = 'Incomplete';
-              let courseGPA = '–';
-              let earnedCredits = '0.00';
-
-              // Main customized logic:
-              if (creditDef === 'Carnegie Unit' || creditDef === 'Local') {
-                if (!isNaN(gradeNum) && gradeNum >= 6) {
-                  // GPA logic
-                  finalGrade = percent != null ? Math.round(percent) : '—';
-                  courseGPA = percent != null ? calculateGPAFromPercent(percent).toFixed(2) : '–';
-                  earnedCredits = credit.toFixed(2);
-                } else {
-                  // Pass/fail for primary grades
-                  const passCount = logs.filter(l => l.status === 'pass').length;
-                  const failCount = logs.filter(l => l.status === 'fail').length;
-                  const isPass = passCount >= failCount;
-                  finalGrade = logs.length > 0 ? (isPass ? 'Pass' : 'Fail') : 'Incomplete';
-                  courseGPA = '–';
-                  earnedCredits = (finalGrade === 'Pass' ? credit.toFixed(2) : '0.00');
-                }
-              } else {
-                // For all other credit definitions, use isCompleted for all grades
-                finalGrade = subj.isCompleted ? 'Completed' : 'Incomplete';
-                courseGPA = '–';
-                earnedCredits = subj.isCompleted ? credit.toFixed(2) : '0.00';
-              }
-
-              return (
-                <div className="table-row" key={idx}>
-                  <div className="w-50">{subj.subjectName}</div>
-                  <div>{finalGrade}</div>
-                  <div>{earnedCredits}</div>
-                  <div>{courseGPA}</div>
-                </div>
-              );
-            })}
+            {courseRows}
           </div>
 
           <div className="transcript-summary">
@@ -182,7 +222,7 @@ function TranscriptPreview() {
             </p>
             {(creditDef === 'Carnegie Unit' || creditDef === 'Local') && gradeNum >= 6 ? (
               <>
-                <p>Cumulative GPA: {(student.gpa || 0).toFixed(3)}</p>
+                <p>Cumulative GPA: {cumulativeGPA !== null ? cumulativeGPA.toFixed(3) : "0.000"}</p>
                 <p>Total Cumulative Credits: {totalCredits.toFixed(2)}</p>
               </>
             ) : (
@@ -190,9 +230,17 @@ function TranscriptPreview() {
             )}
           </div>
 
-          <p className="transcript-scale">
-            <strong>Grading/GPA Scale:</strong> A 90-100 (4.0), B 80-89 (3.0), C 70-79 (2.0), D 60-69 (1.0), F 0-59 (0.0)
-          </p>
+          <div className="transcript-scale" style={{marginTop: 18, textAlign: "center", fontSize: "0.98em", color: "#444"}}>
+  <strong>GPA Scale:</strong>
+  <div>
+    A+/A (97-100/93-96): 4.0 A- (90-92): 3.7 B+ (87-89): 3.3 B (83-86): 3.0 B- (80-82): 2.7 C+ (77-79): 2.3 
+  </div>
+  <div>
+    C (73-76): 2.0  C- (70-72): 1.7 D+ (67-69): 1.3 D (65-66): 1.0 E/F (below 65): 0.0
+  </div>
+</div>
+
+
         </div>
       </div>
     </DashboardLayout>

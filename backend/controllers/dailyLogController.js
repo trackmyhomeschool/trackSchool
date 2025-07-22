@@ -88,31 +88,20 @@ function calculateCredits(hours, hoursPerCredit) {
 }
 
 // GPA Scale (unchanged)
-function percentageToGPA(pct) {
-  if (pct >= 90) return 4.0;
-  if (pct >= 80) return 3.0;
-  if (pct >= 70) return 2.0;
-  if (pct >= 60) return 1.0;
-  return 0.0;
+ function percentageToGPA(pct) {
+  if (pct >= 97) return 4.0;         // A+
+  if (pct >= 93) return 4.0;         // A
+  if (pct >= 90) return 3.7;         // A-
+  if (pct >= 87) return 3.3;         // B+
+  if (pct >= 83) return 3.0;         // B
+  if (pct >= 80) return 2.7;         // B-
+  if (pct >= 77) return 2.3;         // C+
+  if (pct >= 73) return 2.0;         // C
+  if (pct >= 70) return 1.7;         // C-
+  if (pct >= 67) return 1.3;         // D+
+  if (pct >= 65) return 1.0;         // D
+  return 0.0;                        // E/F
 }
-
-// GPA Recalculation (unchanged)
-// async function recalculateStudentGPA(student) {
-//   const logs = await DailyLog.find({ student: student._id });
-//   const validLogs = logs.filter(log => log.percentage > 0 && log.studyTimeMinutes > 0);
-
-//   const totalCredits = student.subjects.reduce((sum, subj) => sum + (subj.creditHours || 0), 0);
-
-//   if (validLogs.length === 0 || totalCredits === 0) {
-//     student.gpa = 0;
-//   } else {
-//     const weightedTotal = validLogs.reduce((sum, log) => sum + (log.percentage * log.studyTimeMinutes), 0);
-//     const totalTime = validLogs.reduce((sum, log) => sum + log.studyTimeMinutes, 0);
-//     const weightedPercentage = weightedTotal / totalTime;
-
-//     student.gpa = percentageToGPA(weightedPercentage).toFixed(2);
-//   }
-// }
 
 async function recalculateStudentGPA(student) {
   let totalCredits = 0;
@@ -143,10 +132,6 @@ async function recalculateStudentGPA(student) {
     student.gpa = (totalWeightedGPA / totalCredits).toFixed(2);
   }
 }
-
-
-
-
 
 // Check if student has logged for a subject before
 exports.hasLoggedSubjectBefore = async (req, res) => {

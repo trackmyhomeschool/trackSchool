@@ -90,6 +90,22 @@ function Dashboard() {
     return (minutes / 60).toFixed(1);
   };
 
+
+   function percentageToGPA(pct) {
+  if (pct >= 97) return 4.0;         // A+
+  if (pct >= 93) return 4.0;         // A
+  if (pct >= 90) return 3.7;         // A-
+  if (pct >= 87) return 3.3;         // B+
+  if (pct >= 83) return 3.0;         // B
+  if (pct >= 80) return 2.7;         // B-
+  if (pct >= 77) return 2.3;         // C+
+  if (pct >= 73) return 2.0;         // C
+  if (pct >= 70) return 1.7;         // C-
+  if (pct >= 67) return 1.3;         // D+
+  if (pct >= 65) return 1.0;         // D
+  return 0.0;                        // E/F
+}
+
   const getMonthlyGpaData = () => {
     if (!selectedData) return [];
     const monthMap = {};
@@ -107,7 +123,7 @@ function Dashboard() {
     return Object.values(monthMap)
       .map(({ month, percentages }) => {
         const avgPct = percentages.reduce((a, b) => a + b, 0) / percentages.length;
-        const gpa = avgPct >= 90 ? 4 : avgPct >= 80 ? 3 : avgPct >= 70 ? 2 : avgPct >= 60 ? 1 : 0;
+        const gpa = percentageToGPA(avgPct);
         return { month, gpa: parseFloat(gpa.toFixed(2)) };
       })
       .sort((a, b) => new Date(`1 ${a.month} 2020`) - new Date(`1 ${b.month} 2020`));
