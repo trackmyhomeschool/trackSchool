@@ -68,21 +68,29 @@ function DailyLogs() {
         {students.map((student) => (
           <Card className="mb-3" key={student._id}>
             <Card.Body>
-              <div className="dailylog-row" style={{ display: 'flex', alignItems: 'center' }}>
+              <div
+                className="dailylog-row"
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <img
                   src={
-                    student.profilePicture?.startsWith('/uploads')
+                    student.profilePicture?.startsWith("/uploads")
                       ? `${process.env.REACT_APP_API_URL}${student.profilePicture}`
-                      : '/images/default-avatar.jpg'
+                      : "/images/default-avatar.jpg"
                   }
                   alt="avatar"
                   className="dailylog-avatar"
                 />
                 <div className="dailylog-info" style={{ flex: 1 }}>
-                  <strong>{student.firstName} {student.lastName}</strong>
+                  <strong>
+                    {student.firstName} {student.lastName}
+                  </strong>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto' }}>
+                <div
+                  style={{ display: "flex", gap: "0.5rem", marginLeft: "auto" }}
+                >
                   <Button
+                    className="see-btn"
                     variant="outline-info"
                     onClick={() => {
                       setLoading(true);
@@ -93,7 +101,7 @@ function DailyLogs() {
                     See Log
                   </Button>
                   <button
-                    className="dailylog-btn"
+                    className="log-btn"
                     onClick={() => openLogModal(student)}
                   >
                     Today's Log

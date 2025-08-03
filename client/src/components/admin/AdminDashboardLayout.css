@@ -6,7 +6,7 @@
 
 .admin-sidebar {
   width: 270px;
-  background: #143b76;
+  background: #1395b7;
   color: #fff;
   transition: width 0.25s, left 0.3s;
   display: flex;
@@ -17,8 +17,8 @@
 
 .admin-sidebar-header {
   padding: 28px 16px 8px 16px;
-  border-bottom: 1px solid #254178;
-  background: #184488;
+  border-bottom: 1px solid #015270;
+  background: #015270;
   transition: padding-left 0.3s;
 }
 
@@ -54,8 +54,9 @@
   user-select: none;
 }
 .admin-menu > div:hover {
-  background: #2563eb;
+  background: #015270;
   color: #fff;
+  margin: 10px;
 }
 
 /* Sidebar closed on mobile */

@@ -135,18 +135,24 @@ const navigate = useNavigate();
         <Modal.Title>Log Daily Activity</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {message && <Alert variant={message.startsWith('✓') ? 'success' : 'info'}>{message}</Alert>}
+        {message && (
+          <Alert variant={message.startsWith("✓") ? "success" : "info"}>
+            {message}
+          </Alert>
+        )}
 
         {/* Subject ComboBox */}
         <Form.Group className="mb-2">
           <Form.Label>Choose Subject</Form.Label>
           <Form.Select
             value={selectedCombo}
-            onChange={e => setSelectedCombo(e.target.value)}
+            onChange={(e) => setSelectedCombo(e.target.value)}
           >
             <option value="">-- Select Subject --</option>
             {subjectOptions.map((s, idx) => (
-              <option key={idx} value={s}>{s}</option>
+              <option key={idx} value={s}>
+                {s}
+              </option>
             ))}
           </Form.Select>
         </Form.Group>
@@ -158,9 +164,9 @@ const navigate = useNavigate();
             list="subjectList"
             placeholder="Type or select subject"
             value={subjectInput}
-            onChange={e => {
+            onChange={(e) => {
               setSubjectInput(e.target.value);
-              setSelectedCombo(''); // If user types, reset ComboBox
+              setSelectedCombo(""); // If user types, reset ComboBox
             }}
             autoComplete="off"
           />
@@ -190,7 +196,7 @@ const navigate = useNavigate();
               label="Pass"
               name="status"
               value="pass"
-              checked={status === 'pass'}
+              checked={status === "pass"}
               onChange={(e) => setStatus(e.target.value)}
             />
             <Form.Check
@@ -198,7 +204,7 @@ const navigate = useNavigate();
               label="Fail"
               name="status"
               value="fail"
-              checked={status === 'fail'}
+              checked={status === "fail"}
               onChange={(e) => setStatus(e.target.value)}
             />
           </Form.Group>
@@ -228,49 +234,55 @@ const navigate = useNavigate();
         </Form.Group>
       </Modal.Body>
 
-<Modal.Footer className="d-flex justify-content-between align-items-center">
-  <div>
-    <Button
-      variant="outline-info"
-      onClick={() => {
-        navigate(`/students?view=${student._id}`);
-      }}
-      disabled={loading}
-    >
-      See Logs
-    </Button>
-  </div>
-  <div>
-    <Button variant="secondary" onClick={handleClose} disabled={loading}>
-      Close
-    </Button>
-    <Button
-      variant={isRegisteredSubject ? "primary" : "success"}
-      onClick={handleSave}
-      disabled={loading}
-      className="ms-2"
-    >
-      {loading ? (
-        <>
-          <Spinner animation="border" size="sm" /> Saving...
-        </>
-      ) : isRegisteredSubject ? (
-        "Save Log"
-      ) : (
-        "New Log"
-      )}
-    </Button>
-  </div>
-</Modal.Footer>
-
+      <Modal.Footer className="d-flex justify-content-between align-items-center">
+        <div>
+          <Button
+            className='see-btn '
+            variant="outline-info"
+            onClick={() => {
+              navigate(`/students?view=${student._id}`);
+            }}
+            disabled={loading}
+          >
+            See Logs
+          </Button>
+        </div>
+        <div>
+          <Button variant="secondary" onClick={handleClose} disabled={loading}>
+            Close
+          </Button>
+          <Button
+            variant={isRegisteredSubject ? "primary" : "success"}
+            onClick={handleSave}
+            disabled={loading}
+            className="ms-2 log-btn"
+          >
+            {loading ? (
+              <>
+                <Spinner animation="border" size="sm" /> Saving...
+              </>
+            ) : isRegisteredSubject ? (
+              "Save Log"
+            ) : (
+              "New Log"
+            )}
+          </Button>
+        </div>
+      </Modal.Footer>
 
       {/* Register Subject Modal */}
-      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)} centered backdrop="static">
+      <Modal
+        show={showCreateModal}
+        onHide={() => setShowCreateModal(false)}
+        centered
+        backdrop="static"
+      >
         <Modal.Header>
           <Modal.Title>Register Subject?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          The subject "<b>{subjectInput}</b>" is not registered for this student. Do you want to proceed and register it?
+          The subject "<b>{subjectInput}</b>" is not registered for this
+          student. Do you want to proceed and register it?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowCreateModal(false)}>

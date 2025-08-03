@@ -93,11 +93,11 @@ function ReportsPage() {
         )}
 
         <h2 className="text-2xl font-bold text-center mb-4 text-blue-700">Reports</h2>
-        <div className="d-flex justify-content-end mb-4">
+        <div className="d-flex justify-content-end mb-4 w-100">
           <Form.Select
             value={selectedStudent}
             onChange={(e) => setSelectedStudent(e.target.value)}
-            style={{ width: '250px' }}
+           
           >
             {students.map((student) => (
               <option key={student._id} value={student._id}>

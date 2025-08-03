@@ -75,7 +75,7 @@ function UsersPage() {
               <button onClick={() => handleDelete(user._id)} title="Delete User"
                 style={{
                   marginLeft: '15px',
-                  backgroundColor: 'royalblue',
+                  backgroundColor: '#015270',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
@@ -84,10 +84,10 @@ function UsersPage() {
                   alignItems: 'center',
                   gap: '6px',
                   cursor: 'pointer',
-                  fontWeight: 'bold'
+                  
                 }}
               >
-                <FaTrashAlt /> Delete
+                <FaTrashAlt />
               </button>
             </div>
           ))}
