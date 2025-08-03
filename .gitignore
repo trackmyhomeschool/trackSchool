@@ -45,3 +45,10 @@ coverage/
 
 # Mac
 Icon?
+
+
+# Ignore uploads and virtual env
+backend/uploads/
+backend/venv/
+backend/*.png
+backend/.etc
