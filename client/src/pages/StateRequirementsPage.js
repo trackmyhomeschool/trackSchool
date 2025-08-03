@@ -90,9 +90,11 @@ function StateRequirementsPage() {
 
   return (
     <DashboardLayout>
-      <div style={{ maxWidth: 520, margin: '40px auto' }}>
+      <div style={{ maxWidth: 520, margin: "40px auto" }}>
         <Card className="shadow rounded-3 p-4">
-          <h2 className="mb-4 text-center">State Requirements</h2>
+          <h2 className="mb-4 text-center text-primary fw-bold">
+            State Requirements
+          </h2>
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>State</Form.Label>
@@ -105,7 +107,7 @@ function StateRequirementsPage() {
                 type="number"
                 min={0}
                 value={editMode ? localCredits : user.minCreditsRequired}
-                onChange={e => setLocalCredits(e.target.value)}
+                onChange={(e) => setLocalCredits(e.target.value)}
                 disabled={!editMode}
               />
             </Form.Group>
@@ -116,7 +118,7 @@ function StateRequirementsPage() {
                 type="number"
                 min={1}
                 value={editMode ? localHours : user.hoursPerCredit}
-                onChange={e => setLocalHours(e.target.value)}
+                onChange={(e) => setLocalHours(e.target.value)}
                 disabled={!editMode}
               />
             </Form.Group>
@@ -127,7 +129,11 @@ function StateRequirementsPage() {
             </Form.Group>
 
             {isLocal && !editMode && (
-              <Button variant="warning" onClick={() => setEditMode(true)} className="w-100">
+              <Button
+                variant="warning"
+                onClick={() => setEditMode(true)}
+                className="w-100"
+              >
                 Edit
               </Button>
             )}
@@ -138,12 +144,21 @@ function StateRequirementsPage() {
                 className="w-100"
                 disabled={saveLoading}
               >
-                {saveLoading ? 'Saving...' : 'Save Changes'}
+                {saveLoading ? "Saving..." : "Save Changes"}
               </Button>
             )}
           </Form>
-          {success && <Alert variant="success" className="mt-3 text-center">{success}</Alert>}
-          {isLocal && <p className="text-secondary mt-3 text-center">You can edit these fields because your state uses a local Carnegie Unit.</p>}
+          {success && (
+            <Alert variant="success" className="mt-3 text-center">
+              {success}
+            </Alert>
+          )}
+          {isLocal && (
+            <p className="text-secondary mt-3 text-center">
+              You can edit these fields because your state uses a local Carnegie
+              Unit.
+            </p>
+          )}
         </Card>
       </div>
     </DashboardLayout>

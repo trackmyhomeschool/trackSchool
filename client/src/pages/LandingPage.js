@@ -572,12 +572,18 @@ function LandingPage() {
           <div className="row align-items-center justify-content-center">
             <div className="col-lg-6">
               <div className="d-flex bg-white p-3 shadow-sm">
-                <lord-icon
+                {/* <lord-icon
                   src="https://cdn.lordicon.com/mhhpoybt.json"
                   trigger="loop"
                   colors="primary:#121331,secondary:#ee8f66,tertiary:#ebe6ef"
                   style={{ width: "80px", height: "80px" }}
+                /> */}
+                <img
+                  src="/images/number.png"
+                  style={{ width: "100px" }}
+                  alt="Email Icon"
                 />
+
                 <div className="d-block align-self-center ms-4">
                   <h4 className="fw-semibold text-primary">Phone number</h4>
                   <span>1 (540) 846-1729</span>
@@ -587,11 +593,10 @@ function LandingPage() {
 
             <div className="col-lg-6">
               <div className="d-flex bg-white p-3 shadow-sm">
-                <lord-icon
-                  src="https://cdn.lordicon.com/nqisoomz.json"
-                  trigger="loop"
-                  colors="primary:#121331,secondary:#ebe6ef,tertiary:#ee8f66,quaternary:#3a3347"
-                  style={{ width: "80px", height: "80px" }}
+                <img
+                  src="/images/email.png"
+                  style={{ width: "100px" }}
+                  alt="Email Icon"
                 />
                 <div className="d-block ms-4 align-self-center">
                   <h4 className="fw-semibold text-primary">Mail address</h4>

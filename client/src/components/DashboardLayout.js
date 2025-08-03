@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import './DashboardLayout.css';
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import "./DashboardLayout.css";
 import {
   FaTachometerAlt,
   FaUserGraduate,
@@ -12,14 +12,14 @@ import {
   FaFileAlt,
   FaSearch,
   FaBars,
-  FaSignOutAlt
-} from 'react-icons/fa';
-import axios from 'axios';
+  FaSignOutAlt,
+} from "react-icons/fa";
+import axios from "axios";
 
 function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [user, setUser] = useState({ email: 'Loading...' });
+  const [user, setUser] = useState({ email: "Loading..." });
   const navigate = useNavigate();
 
   // --- Touch state for swipe detection ---
@@ -46,23 +46,30 @@ function DashboardLayout({ children }) {
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/logout`, {}, { withCredentials: true });
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
     } catch (err) {
-      console.error('Logout failed:', err.message);
+      console.error("Logout failed:", err.message);
     }
-    navigate('/');
+    navigate("/");
   };
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/me`, {
-          withCredentials: true
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/auth/me`,
+          {
+            withCredentials: true,
+          }
+        );
         setUser(res.data);
       } catch (err) {
-        console.error('Failed to fetch user info');
-        setUser({ email: 'unknown@user.com' });
+        console.error("Failed to fetch user info");
+        setUser({ email: "unknown@user.com" });
       }
     };
 
@@ -76,14 +83,14 @@ function DashboardLayout({ children }) {
       setSidebarOpen(!mobile);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const getUserImage = () => {
-    if (!user?.profilePicture) return '/images/default-avatar.jpg';
-    return user.profilePicture.startsWith('/uploads')
+    if (!user?.profilePicture) return "/images/default-avatar.jpg";
+    return user.profilePicture.startsWith("/uploads")
       ? `${process.env.REACT_APP_API_URL}${user.profilePicture}`
       : user.profilePicture;
   };
@@ -92,10 +99,14 @@ function DashboardLayout({ children }) {
   const isPremiumOrTrial = user.isTrial || user.isPremium;
 
   return (
-    <div className={`dashboard-wrapper ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+    <div
+      className={`dashboard-wrapper ${
+        sidebarOpen ? "sidebar-open" : "sidebar-closed"
+      }`}
+    >
       {isMobile && (
         <div className="mobile-toggle">
-          <FaBars onClick={() => setSidebarOpen(prev => !prev)} />
+          <FaBars onClick={() => setSidebarOpen((prev) => !prev)} />
         </div>
       )}
 
@@ -106,37 +117,65 @@ function DashboardLayout({ children }) {
         onTouchEnd={handleTouchEnd}
       >
         <div className="sidebar-header sidebar-logo">
-          <h2>
-            <span className="title-line">Track My</span>
-            <span className="title-line">Homeschool</span>
-          </h2>
-          <p className="tagline">Structure. Simplicity. Success.</p>
+          <div className="d-flex align-items-end">
+            <div className="pe-2">
+              <img
+                src="/images/logo.png"
+                className="img-fluid logo-h"
+                alt="Logo"
+              />
+            </div>
+            <div className="logo-text">
+              TRACK MY <br />
+              HOMESCHOOL
+            </div>
+          </div>
         </div>
 
         {/* Scrollable Menu */}
         <div className="sidebar-menu-scroll">
           <nav className="menu">
-            <NavLink to="/dashboard"><FaTachometerAlt /> Dashboard</NavLink>
-            <NavLink to="/students"><FaUserGraduate /> Students</NavLink>
-            <NavLink to="/logs"><FaBook /> Daily Logs</NavLink>
+            <NavLink to="/dashboard">
+              <FaTachometerAlt /> Dashboard
+            </NavLink>
+            <NavLink to="/students">
+              <FaUserGraduate /> Students
+            </NavLink>
+            <NavLink to="/logs">
+              <FaBook /> Daily Logs
+            </NavLink>
 
             {/* Reports: freeze if not premium/trial */}
             {isPremiumOrTrial ? (
-              <NavLink to="/reports"><FaFileAlt /> Reports</NavLink>
+              <NavLink to="/reports">
+                <FaFileAlt /> Reports
+              </NavLink>
             ) : (
-              <div className="sidebar-btn-disabled"><FaFileAlt /> Reports <span className="lock-icon">🔒</span></div>
+              <div className="sidebar-btn-disabled">
+                <FaFileAlt /> Reports <span className="lock-icon">🔒</span>
+              </div>
             )}
 
             {/* Activities: freeze if not premium/trial */}
             {isPremiumOrTrial ? (
-              <NavLink to="/activities"><FaTrophy /> Activities</NavLink>
+              <NavLink to="/activities">
+                <FaTrophy /> Activities
+              </NavLink>
             ) : (
-              <div className="sidebar-btn-disabled"><FaTrophy /> Activities <span className="lock-icon">🔒</span></div>
+              <div className="sidebar-btn-disabled">
+                <FaTrophy /> Activities <span className="lock-icon">🔒</span>
+              </div>
             )}
 
-            <NavLink to="/requirements"><FaChartBar /> State Requirements</NavLink>
-            <NavLink to="/map"><FaMap /> Homeschool Map</NavLink>
-            <NavLink to="/settings"><FaCog /> Settings</NavLink>
+            <NavLink to="/requirements">
+              <FaChartBar /> State Requirements
+            </NavLink>
+            <NavLink to="/map">
+              <FaMap /> Homeschool Map
+            </NavLink>
+            <NavLink to="/settings">
+              <FaCog /> Settings
+            </NavLink>
           </nav>
         </div>
 
@@ -152,20 +191,30 @@ function DashboardLayout({ children }) {
                 src={getUserImage()}
                 alt="avatar"
                 className="footer-avatar"
-                onClick={() => navigate('/settings')}
-                onError={(e) => { e.target.src = '/images/default-avatar.jpg'; }}
+                onClick={() => navigate("/settings")}
+                onError={(e) => {
+                  e.target.src = "/images/default-avatar.jpg";
+                }}
               />
               <div className="user-email">{user.email}</div>
-              <FaSignOutAlt className="logout-icon" title="Logout" onClick={handleLogout} />
+              <FaSignOutAlt
+                className="logout-icon"
+                title="Logout"
+                onClick={handleLogout}
+              />
             </div>
           </div>
         </div>
       </aside>
 
       <main className="dashboard-main scrollable-main">
-        <header className="dashboard-topbar">
+        <header className="dashboard-topbar dashboard-header">
           <div className="search-container">
-            <input type="text" placeholder="Search" className="search-input" />
+            <input
+              type="text"
+              placeholder="Search"
+              className="search-input input-d"
+            />
             <FaSearch className="search-icon-end" />
           </div>
           <div className="profile-info">
@@ -173,13 +222,31 @@ function DashboardLayout({ children }) {
               src={getUserImage()}
               alt="user"
               className="avatar"
-              onClick={() => navigate('/settings')}
-              onError={(e) => { e.target.src = '/images/default-avatar.jpg'; }}
+              onClick={() => navigate("/settings")}
+              onError={(e) => {
+                e.target.src = "/images/default-avatar.jpg";
+              }}
             />
           </div>
         </header>
 
         <section className="dashboard-content">{children}</section>
+
+        <footer className="d-footer">
+          <div className="row align-items-center justify-content-between">
+            <div className="col-auto">
+              <p className="mb-0">
+                © {new Date().getFullYear()} TrackMyHomeSchool. All Rights
+                Reserved.
+              </p>
+            </div>
+            <div className="col-auto">
+              <p className="mb-0">
+                Made by <span style={{ color: "#278ca7" }}>DreamNexTech</span>
+              </p>
+            </div>
+          </div>
+        </footer>
       </main>
     </div>
   );

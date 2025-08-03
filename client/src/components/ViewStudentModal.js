@@ -109,24 +109,40 @@ function ViewStudentModal({ show, handleClose, student }) {
         <Modal.Title>Student Overview</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: '10px', paddingLeft: '10px' }}>
+        <div
+          style={{
+            maxHeight: "70vh",
+            overflowY: "auto",
+            paddingRight: "10px",
+            paddingLeft: "10px",
+          }}
+        >
           <div className="text-center mb-4">
             <Image
               src={getProfilePicture()}
               roundedCircle
               width={120}
               height={120}
-              style={{ objectFit: 'cover' }}
-              onError={(e) => (e.target.src = '/images/default-avatar.jpg')}
+              style={{ objectFit: "cover" }}
+              onError={(e) => (e.target.src = "/images/default-avatar.jpg")}
             />
           </div>
 
-          <h4 className="text-center">{student?.firstName} {student?.lastName}</h4>
+          <h4 className="text-center">
+            {student?.firstName} {student?.lastName}
+          </h4>
           <div className="text-center my-3">
             <strong>Total Credits:</strong> {totalCredits} &nbsp;&nbsp;
-            {isPrimaryStudent
-              ? (<><strong>Status:</strong> {overallStatus}</>)
-              : (<><strong>GPA:</strong> {student?.gpa || 0.0} &nbsp;&nbsp;<strong>Total Hours:</strong> {totalHours}</>)}
+            {isPrimaryStudent ? (
+              <>
+                <strong>Status:</strong> {overallStatus}
+              </>
+            ) : (
+              <>
+                <strong>GPA:</strong> {student?.gpa || 0.0} &nbsp;&nbsp;
+                <strong>Total Hours:</strong> {totalHours}
+              </>
+            )}
           </div>
 
           <div className="mt-4">
@@ -137,8 +153,8 @@ function ViewStudentModal({ show, handleClose, student }) {
                   <tr>
                     <th>Subject</th>
                     <th>Credits</th>
-                    <th>{isPrimaryStudent ? 'Result' : 'Percentage'}</th>
-                    <th>{isPrimaryStudent ? 'Status' : 'Grade'}</th>
+                    <th>{isPrimaryStudent ? "Result" : "Percentage"}</th>
+                    <th>{isPrimaryStudent ? "Status" : "Grade"}</th>
                     <th>Hours</th>
                   </tr>
                 </thead>
@@ -146,13 +162,13 @@ function ViewStudentModal({ show, handleClose, student }) {
                   {subjects.map((subject) => {
                     const stats = calculateSubjectStats(subject);
                     return (
-                       <tr key={subject.subjectName}>
-        <td>{subject.subjectName}</td>
-        <td>{subject.creditHours || 0}</td>
-        <td>{stats.average}</td>
-        <td>{stats.gpa}</td>
-        <td>{(subject.totalHours || 0).toFixed(2)}</td>
-      </tr>
+                      <tr key={subject.subjectName}>
+                        <td>{subject.subjectName}</td>
+                        <td>{subject.creditHours || 0}</td>
+                        <td>{stats.average}</td>
+                        <td>{stats.gpa}</td>
+                        <td>{(subject.totalHours || 0).toFixed(2)}</td>
+                      </tr>
                     );
                   })}
                 </tbody>
@@ -162,10 +178,10 @@ function ViewStudentModal({ show, handleClose, student }) {
             <h5 className="mb-3 mt-4 d-flex justify-content-between align-items-center">
               <span>Logs by Date</span>
               <select
-                className="form-select form-select-sm"
+                className="form-select form-select-sm input-d"
                 value={logFilter}
                 onChange={(e) => setLogFilter(e.target.value)}
-                style={{ width: '160px' }}
+                style={{ width: "160px" }}
               >
                 <option value="all">All</option>
                 <option value="today">Today</option>
@@ -177,15 +193,17 @@ function ViewStudentModal({ show, handleClose, student }) {
 
             {(() => {
               const allLogs = [];
-              subjects.forEach(subject => {
-                (subject.dailyLogs || []).forEach(log => {
+              subjects.forEach((subject) => {
+                (subject.dailyLogs || []).forEach((log) => {
                   allLogs.push({
                     subjectName: subject.subjectName,
-                    date: new Date(log.date).toISOString().split('T')[0],
+                    date: new Date(log.date).toISOString().split("T")[0],
                     comment: log.comment,
                     percentOrStatus: isPrimaryStudent
-                      ? (log.status === 'pass' ? 'Pass' : 'Fail')
-                      : `${(log.percentage || 0).toFixed(2)}%`
+                      ? log.status === "pass"
+                        ? "Pass"
+                        : "Fail"
+                      : `${(log.percentage || 0).toFixed(2)}%`,
                   });
                 });
               });
@@ -193,22 +211,29 @@ function ViewStudentModal({ show, handleClose, student }) {
               const filteredLogs = filterLogsByDate(allLogs);
               const logsByDate = {};
 
-              filteredLogs.forEach(log => {
+              filteredLogs.forEach((log) => {
                 if (!logsByDate[log.date]) logsByDate[log.date] = [];
                 logsByDate[log.date].push(log);
               });
 
-              const sortedDates = Object.keys(logsByDate).sort((a, b) => new Date(b) - new Date(a));
+              const sortedDates = Object.keys(logsByDate).sort(
+                (a, b) => new Date(b) - new Date(a)
+              );
 
-              return sortedDates.map(date => (
+              return sortedDates.map((date) => (
                 <div key={date} className="mb-4">
                   <h6 className="text-center mt-4 mb-3">
-                    <span role="img" aria-label="calendar">📅</span> {new Date(date).toLocaleDateString()}
+                    <span role="img" aria-label="calendar">
+                      📅
+                    </span>{" "}
+                    {new Date(date).toLocaleDateString()}
                   </h6>
                   {logsByDate[date].map((log, idx) => (
                     <div key={idx} className="ps-3 mb-2">
-                      <strong>[{log.subjectName}]</strong><br />
-                      <span>{log.comment}</span><br />
+                      <strong>[{log.subjectName}]</strong>
+                      <br />
+                      <span>{log.comment}</span>
+                      <br />
                       <span>{log.percentOrStatus}</span>
                     </div>
                   ))}

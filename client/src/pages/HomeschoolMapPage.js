@@ -223,7 +223,7 @@ const HomeschoolMapPage = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
-                padding: "6px",
+                padding: "7px 20px",
                 borderRadius: "4px",
                 border: "1px solid #bbb",
                 minWidth: 120,
@@ -236,7 +236,7 @@ const HomeschoolMapPage = () => {
             />
             <button
               type="submit"
-              className="back-button"
+              className="log-btn"
               style={{ padding: "8px 12px", minWidth: 60 }}
             >
               Search

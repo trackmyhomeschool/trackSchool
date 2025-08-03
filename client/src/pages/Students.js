@@ -165,7 +165,7 @@ useEffect(() => {
     <DashboardLayout>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h3>Students</h3>
+          <h3 className="text-black">Students</h3>
           <p className="text-muted">Manage your homeschool students</p>
         </div>
         <Button variant="primary" onClick={() => setShowAddStudentModal(true)}>
@@ -176,64 +176,70 @@ useEffect(() => {
       <AddStudentModal
         show={showAddStudentModal}
         handleClose={() => setShowAddStudentModal(false)}
-        onStudentAdded={(newStudent) => setStudents(prev => [...prev, newStudent])}
+        onStudentAdded={(newStudent) =>
+          setStudents((prev) => [...prev, newStudent])
+        }
       />
 
-      <div className="mb-5">
-        <h5>Student List</h5>
-        <p className="text-muted">Manage all of your homeschool students</p>
-
-        <Table responsive hover className="custom-table">
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Grade</th>
-              <th>GPA</th>
-              <th>Birth Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredStudents.map((s) => (
-              <tr key={s._id}>
-                <td>
-                  <img
-                    src={getProfilePictureUrl(s.profilePicture)}
-                    alt="avatar"
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      objectFit: 'cover',
-                      borderRadius: '50%',
-                      marginRight: '10px'
-                    }}
-                  />
-                  {s.firstName} {s.lastName}
-                </td>
-                <td>{gradeLabels[s.grade] || '—'}</td>
-                <td>{s.gpa}</td>
-                <td>{s.birthDate ? new Date(s.birthDate).toLocaleDateString() : 'N/A'}</td>
-                <td>
-                  <Button
-                    variant="outline-dark"
-                    size="sm"
-                    className="me-2"
-                    onClick={() => handleViewStudent(s)}
-                  >
-                    <FaEye /> View
-                  </Button>
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => handleDeleteStudent(s._id)}
-                  >
-                    <FaTrashAlt /> Delete
-                  </Button>
-                </td>
+      <div className="card">
+        <div className="card-body p-2">
+          <Table responsive hover className="custom-table bordered-table mb-0">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Grade</th>
+                <th>GPA</th>
+                <th>Birth Date</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {filteredStudents.map((s) => (
+                <tr key={s._id}>
+                  <td>
+                    <img
+                      src={getProfilePictureUrl(s.profilePicture)}
+                      alt="avatar"
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                        marginRight: "10px",
+                      }}
+                    />
+                    {s.firstName} {s.lastName}
+                  </td>
+                  <td>{gradeLabels[s.grade] || "—"}</td>
+                  <td>{s.gpa}</td>
+                  <td>
+                    {s.birthDate
+                      ? new Date(s.birthDate).toLocaleDateString()
+                      : "N/A"}
+                  </td>
+                  <td>
+                    <Button
+                      variant="outline-dark"
+                      size="sm"
+                      className="me-2 p-2 border-unset  bg-primary-light text-primary-600 rounded-circle d-inline-flex align-items-center justify-content-center"
+                      onClick={() => handleViewStudent(s)}
+                    >
+                      <FaEye />
+                    </Button>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      className="p-2 border-unset bg-danger-focus text-danger-main rounded-circle d-inline-flex align-items-center justify-content-center"
+                      onClick={() => handleDeleteStudent(s._id)}
+                    >
+                      <FaTrashAlt />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       </div>
 
       <ViewStudentModal
