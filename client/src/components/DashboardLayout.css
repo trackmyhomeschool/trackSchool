@@ -290,6 +290,10 @@
   height: 40px !important;
 }
 
+.logo-h-inner {
+  height: 60px !important;
+}
+
 .dashboard-header {
   height: 4.5rem;
   background-color: white;

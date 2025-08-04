@@ -44,7 +44,7 @@ const Navbar = ({
                 <div className="pe-2">
                   <img
                     src="/images/logo.png"
-                    className="img-fluid logo-h"
+                    className="img-fluid logo-h-inner"
                     alt="Logo"
                   />
                 </div>
