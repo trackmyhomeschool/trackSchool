@@ -137,6 +137,14 @@ a:hover {
   background-color: var(--primary-light) !important;
 }
 
+.bg-success-focus {
+    background-color: var(--success-focus) !important;
+}
+
+.text-success-main {
+    color: var(--success-main) !important;
+}
+
 .w-32-px {
   width: 2rem !important;
 }

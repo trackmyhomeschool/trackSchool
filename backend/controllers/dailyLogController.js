@@ -11,7 +11,8 @@ exports.createLog = async (req, res) => {
       comment,
       percentage = 0,
       studyTimeMinutes = 0,
-      status
+      status,
+      logDate,
     } = req.body;
 
     if (!comment) return res.status(400).json({ error: 'Comment is required' });
@@ -30,7 +31,8 @@ exports.createLog = async (req, res) => {
         subjectName: subjectName.trim(),
         totalHours: 0,
         creditHours: 0,
-        isCompleted: false
+        isCompleted: false,
+        logDate: logDate ? new Date(logDate) : new Date(), // ✅ set logDate
       };
       student.subjects.push(subject);
     }
@@ -44,6 +46,7 @@ exports.createLog = async (req, res) => {
       date: today,
       comment,
       studyTimeMinutes,
+      logDate: logDate ? new Date(logDate) : new Date(), // ✅ set logDate
     });
 
     if (parseInt(student.grade) > 5) {
@@ -66,6 +69,11 @@ exports.createLog = async (req, res) => {
       const deltaHours = studyTimeMinutes / 60;
       embedded.totalHours = Math.max((embedded.totalHours || 0) + deltaHours, 0);
       embedded.creditHours = calculateCredits(embedded.totalHours, user.hoursPerCredit);
+      // ✅ Always update logDate when completion changes
+      if (logDate) {
+        embedded.logDate = new Date(logDate);
+      }
+      student.markModified("subjects");
     }
 
     await recalculateStudentGPA(student);
@@ -162,26 +170,29 @@ exports.getTodaysLog = async (req, res) => {
 
 exports.updateCompletionStatus = async (req, res) => {
   const { studentId, subjectName } = req.params;
-  const { isCompleted } = req.body;
+  const { isCompleted, logDate } = req.body;
 
   if (!studentId || !subjectName)
     return res.status(400).json({ error: 'studentId and subjectName are required' });
 
   try {
     const student = await Student.findById(studentId);
-    if (!student) return res.status(404).json({ error: 'Student not found' });
+    if (!student) return res.status(404).json({ error: "Student not found" });
 
     let embedded = student.subjects.find(
-      s => (s.subjectName || '').trim().toLowerCase() === (subjectName || '').trim().toLowerCase()
+      (s) =>
+        (s.subjectName || "").trim().toLowerCase() ===
+        (subjectName || "").trim().toLowerCase()
     );
 
     // Auto-register subject if missing
     if (!embedded) {
       embedded = {
-        subjectName: (subjectName || '').trim(),
+        subjectName: (subjectName || "").trim(),
         totalHours: 0,
         creditHours: 0,
-        isCompleted: false
+        isCompleted: false,
+        logDate: logDate ? new Date(logDate) : new Date(), // ✅ set logDate
       };
       student.subjects.push(embedded);
     }
@@ -190,6 +201,11 @@ exports.updateCompletionStatus = async (req, res) => {
     const wasCompleted = embedded.isCompleted;
     embedded.isCompleted = isCompleted;
 
+    // ✅ Always update logDate when completion changes
+    if (logDate) {
+      embedded.logDate = new Date(logDate);
+    }
+
     if (isCompleted && !wasCompleted) {
       embedded.creditHours += 1;
     } else if (!isCompleted && wasCompleted) {
@@ -197,7 +213,9 @@ exports.updateCompletionStatus = async (req, res) => {
     }
 
     await student.save();
-    return res.status(200).json({ message: 'Completion status updated successfully' });
+    return res
+      .status(200)
+      .json({ message: "Completion status updated successfully" });
   } catch (error) {
     console.error('❌ Error updating completion status:', error);
     return res.status(500).json({ error: 'Failed to update completion status' });

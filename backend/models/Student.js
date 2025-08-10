@@ -1,12 +1,16 @@
 // ✅ UPDATED Student.js (Mongoose Schema)
 const mongoose = require('mongoose');
 
-const embeddedSubjectSchema = new mongoose.Schema({
-  subjectName: { type: String, required: true },
-  totalHours: { type: Number, default: 0 },
-  creditHours: { type: Number, default: 0 },
-  isCompleted: { type: Boolean, default: false }
-}, { _id: false });
+const embeddedSubjectSchema = new mongoose.Schema(
+  {
+    subjectName: { type: String, required: true },
+    totalHours: { type: Number, default: 0 },
+    creditHours: { type: Number, default: 0 },
+    isCompleted: { type: Boolean, default: false },
+    logDate: { type: Date, default: Date.now },
+  },
+  { _id: false }
+);
 
 const activitySchema = new mongoose.Schema({
   date: { type: String, required: true },

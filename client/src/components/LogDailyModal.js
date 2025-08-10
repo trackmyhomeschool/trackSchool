@@ -18,6 +18,13 @@ function LogDailyModal({ show, handleClose, student, onRefresh }) {
   const [message, setMessage] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  // Add this in your state section
+  const [logDate, setLogDate] = useState(() => {
+    // Default to today's date in YYYY-MM-DD format
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  });
+
 const navigate = useNavigate();
   // Update subjects from student prop
   useEffect(() => {
@@ -85,8 +92,8 @@ const navigate = useNavigate();
         studyTimeMinutes: studyTime ? parseInt(studyTime) : 0,
         percentage: parseInt(student.grade) > 5 ? parseFloat(percentage) : undefined,
         status: parseInt(student.grade) <= 5 ? status : null,
+        logDate: logDate ? new Date(logDate) : new Date() // ✅ send chosen date
       };
-
       await axios.post(
         `${process.env.REACT_APP_API_URL}/api/dailyLogs`,
         payload,
@@ -176,6 +183,16 @@ const navigate = useNavigate();
             ))}
           </datalist>
         </Form.Group>
+
+        <Form.Group controlId="logDate" className="mb-3">
+          <Form.Label>Log Date</Form.Label>
+          <Form.Control
+            type="date"
+            value={logDate}
+            onChange={(e) => setLogDate(e.target.value)}
+          />
+        </Form.Group>
+
 
         <Form.Group controlId="commentInput" className="mb-3">
           <Form.Label>Comment</Form.Label>

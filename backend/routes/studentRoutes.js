@@ -21,6 +21,13 @@ router.get('/', getStudents);
 router.get('/:id', getStudentById);
 router.get('/:studentId/subjects/:subjectId/log', getTodayLog);
 router.delete('/:id', deleteStudent);
+const studentController = require("../controllers/studentController");
+router.put(
+  "/:id",
+  protect,
+  studentController.uploadStudentImage,
+  studentController.updateStudent
+);
 
 router.post(
   '/',

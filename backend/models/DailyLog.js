@@ -8,6 +8,7 @@ const dailyLogSchema = new mongoose.Schema({
   percentage: { type: Number, default: 0 },
   studyTimeMinutes: { type: Number, default: 0 }, 
   status: { type: String, enum: ['pass', 'fail', null], default: null },
+  logDate: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('DailyLog', dailyLogSchema);

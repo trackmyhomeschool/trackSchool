@@ -665,3 +665,11 @@ span {
   background-color: var(--white);
   margin-block-start: auto;
 }
+.card-border {
+  border: 1px solid gray !important;
+}
+.over-title {
+  background: #dcdbdb;
+  border-radius: 5px;
+  padding: 8px;
+}

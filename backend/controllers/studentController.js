@@ -165,3 +165,51 @@ exports.deleteStudent = asyncHandler(async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
+
+// ✏️ Update Student
+exports.updateStudent = asyncHandler(async (req, res) => {
+  try {
+    const { firstName, lastName, birthDate, grade } = req.body;
+
+    const student = await Student.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    let profilePicture = student.profilePicture;
+    if (req.file) {
+      if (profilePicture && profilePicture.startsWith("/uploads/")) {
+        const oldImagePath = path.join(
+          __dirname,
+          "..",
+          profilePicture.replace(/^\/+/, "")
+        );
+        fs.unlink(oldImagePath, (err) => {
+          if (err)
+            console.error(
+              "⚠️ Failed to delete old profile image:",
+              err.message
+            );
+        });
+      }
+      profilePicture = `/uploads/students/${req.file.filename}`;
+    }
+
+    student.firstName = firstName || student.firstName;
+    student.lastName = lastName || student.lastName;
+    student.birthDate = birthDate || student.birthDate;
+    student.grade = grade !== undefined ? grade : student.grade;
+    student.profilePicture = profilePicture;
+
+    const updatedStudent = await student.save();
+    res.status(200).json(updatedStudent);
+  } catch (err) {
+    console.error("❌ Failed to update student:", err);
+    res
+      .status(500)
+      .json({ message: "Student update failed", error: err.message });
+  }
+});

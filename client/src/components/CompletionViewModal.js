@@ -37,19 +37,28 @@ function CompletionViewModal({ show, handleClose, student }) {
         <Modal.Title>Completion Overview</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: '10px', paddingLeft: '10px' }}>
+        <div
+          style={{
+            maxHeight: "70vh",
+            overflowY: "auto",
+            paddingRight: "10px",
+            paddingLeft: "10px",
+          }}
+        >
           <div className="text-center mb-4">
             <Image
               src={getProfilePicture()}
               roundedCircle
               width={120}
               height={120}
-              style={{ objectFit: 'cover' }}
-              onError={(e) => (e.target.src = '/images/default-avatar.jpg')}
+              style={{ objectFit: "cover" }}
+              onError={(e) => (e.target.src = "/images/default-avatar.jpg")}
             />
           </div>
 
-          <h4 className="text-center">{student?.firstName} {student?.lastName}</h4>
+          <h4 className="text-center">
+            {student?.firstName} {student?.lastName}
+          </h4>
 
           <div className="text-center my-3">
             <strong>Total Credits:</strong> {totalCredits}
@@ -64,6 +73,7 @@ function CompletionViewModal({ show, handleClose, student }) {
                     <th>Subject</th>
                     <th>Credits</th>
                     <th>Completed</th>
+                    <th>Log Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -71,7 +81,16 @@ function CompletionViewModal({ show, handleClose, student }) {
                     <tr key={subject.subjectName}>
                       <td>{subject.subjectName}</td>
                       <td>{subject.isCompleted ? 1 : 0}</td>
-                      <td>{subject.isCompleted ? 'Yes' : 'No'}</td>
+                      <td>{subject.isCompleted ? "Yes" : "No"}</td>
+                      <td>
+                        <td>
+                          {subject.logDate
+                            ? new Date(subject.logDate)
+                                .toISOString()
+                                .split("T")[0]
+                            : ""}
+                        </td>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

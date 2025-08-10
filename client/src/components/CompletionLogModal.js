@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert, Spinner } from 'react-bootstrap';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +17,23 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Build safe subject options on every student change
+  const [logDate, setLogDate] = useState('');
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  // Overlay style (same as your birth date modal)
+  const calendarOverlayStyle = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    zIndex: 2000,
+    transform: "translate(-50%, -50%)",
+    background: "#fff",
+    borderRadius: "1rem",
+    boxShadow: "0 4px 32px rgba(25, 118, 210, 0.15)",
+    padding: "18px",
+    minWidth: "300px",
+  };
+
   useEffect(() => {
     if (student && Array.isArray(student.subjects)) {
       setSubjectOptions(
@@ -28,53 +46,46 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
     }
   }, [student]);
 
-  // ComboBox selection updates text field and completion
   useEffect(() => {
     if (selectedCombo) {
       setSubjectInput(selectedCombo);
-      // auto-fill completion if subject found
       const match = student.subjects?.find(
         s =>
           typeof s.subjectName === 'string' &&
           s.subjectName.trim().toLowerCase() === selectedCombo.trim().toLowerCase()
       );
-      if (match && typeof match.isCompleted === 'boolean') {
-        setIsCompleted(match.isCompleted);
-      } else {
-        setIsCompleted(null);
-      }
+      setIsCompleted(match?.isCompleted ?? null);
     }
   }, [selectedCombo, student.subjects]);
 
-  // Reset modal fields on open/close
   useEffect(() => {
     if (show) {
       setSubjectInput('');
       setSelectedCombo('');
       setIsCompleted(null);
       setMessage(null);
+      setLogDate('');
     }
   }, [show]);
 
-  // Subject input change with completion auto-fill
   const handleSubjectChange = (e) => {
     setSubjectInput(e.target.value);
-    setSelectedCombo(''); // If typing, reset ComboBox selection
-
-    // auto-fill completion if subject found
+    setSelectedCombo('');
     const match = student.subjects?.find(
       s =>
         typeof s.subjectName === 'string' &&
         s.subjectName.trim().toLowerCase() === e.target.value.trim().toLowerCase()
     );
-    if (match && typeof match.isCompleted === 'boolean') {
-      setIsCompleted(match.isCompleted);
-    } else {
-      setIsCompleted(null);
+    setIsCompleted(match?.isCompleted ?? null);
+  };
+
+  const handleDaySelect = (date) => {
+    if (date) {
+      setLogDate(date.toISOString().split('T')[0]); // YYYY-MM-DD
+      setShowCalendar(false);
     }
   };
 
-  // Check if current subjectInput matches any subject (case-insensitive)
   const isRegisteredSubject = subjectOptions.some(
     s => (s || '').trim().toLowerCase() === (subjectInput || '').trim().toLowerCase()
   );
@@ -83,6 +94,7 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
     setMessage(null);
     if (!(subjectInput || '').trim()) return setMessage('Subject is required.');
     if (isCompleted === null) return setMessage('Please select completion status.');
+    if (!logDate) return setMessage('Please select a date.');
 
     const inputTrimmed = (subjectInput || '').trim();
 
@@ -95,18 +107,18 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
   };
 
   const saveCompletion = async (subjectName) => {
+    console.log('Saving completion for:', subjectName, 'isCompleted:', isCompleted, 'logDate:', logDate);
     setLoading(true);
     try {
       await axios.put(
         `${process.env.REACT_APP_API_URL}/api/dailyLogs/${student._id}/${encodeURIComponent(subjectName)}/update-completion`,
-        { isCompleted },
+        { isCompleted, logDate },
         { withCredentials: true }
       );
 
       setMessage('✓ Completion status saved!');
       setShowCreateModal(false);
 
-      // --- Fetch updated student and update options instantly ---
       const { data: updatedStudent } = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/students/${student._id}`,
         { withCredentials: true }
@@ -124,6 +136,7 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
       setSubjectInput('');
       setSelectedCombo('');
       setIsCompleted(null);
+      setLogDate('');
     } catch (err) {
       setMessage('❌ Error saving completion status.');
       setShowCreateModal(false);
@@ -177,6 +190,88 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
           </datalist>
         </Form.Group>
 
+        {/* Styled Date Picker (same as birth date modal) */}
+        <Form.Group className="mb-3" style={{ position: "relative" }}>
+          <Form.Label>Log Date</Form.Label>
+          <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+            <Form.Control
+              value={logDate}
+              readOnly
+              required
+              onClick={() => setShowCalendar(true)}
+              style={{
+                borderRadius: "8px",
+                fontSize: "1.05rem",
+                padding: "8px",
+                width: "100%",
+                background: "#fff",
+                cursor: "pointer",
+                color: logDate ? "#1976d2" : "#555",
+                fontWeight: 500,
+              }}
+              placeholder=""
+              autoComplete="off"
+            />
+            <span
+              style={{
+                position: "absolute",
+                right: 12,
+                top: "40%",
+                transform: "translateY(-50%)",
+                color: "#1976d2",
+                fontSize: 22,
+                pointerEvents: "none",
+              }}
+            >
+              <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14v11zm0-13H5V6h14v1z" />
+              </svg>
+            </span>
+          </div>
+          {showCalendar && (
+            <>
+              <div
+                style={{
+                  position: "fixed",
+                  left: 0,
+                  top: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  zIndex: 1999,
+                  background: "rgba(0,0,0,0.15)"
+                }}
+                onClick={() => setShowCalendar(false)}
+              />
+              <div style={calendarOverlayStyle}>
+                <DayPicker
+                  mode="single"
+                  selected={logDate ? new Date(logDate) : undefined}
+                  onSelect={handleDaySelect}
+                  fromYear={1980}
+                  toYear={new Date().getFullYear()}
+                  disabled={[{ after: new Date() }]}
+                  captionLayout="dropdown"
+                  modifiersClassNames={{
+                    selected: 'my-selected',
+                    today: 'my-today'
+                  }}
+                  styles={{
+                    caption: { color: "#1976d2" },
+                    head_cell: { color: "#1976d2" },
+                    day_selected: { backgroundColor: "#1976d2", color: "#fff" },
+                  }}
+                />
+                <div style={{ textAlign: "right", marginTop: 8 }}>
+                  <Button size="sm" variant="outline-secondary" onClick={() => setShowCalendar(false)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </Form.Group>
+
+        {/* Completion Status */}
         <Form.Group controlId="completion" className="mb-3">
           <Form.Label>Completion Status</Form.Label>
           <Form.Check
@@ -198,42 +293,41 @@ function CompletionLogModal({ show, handleClose, student, onRefresh }) {
         </Form.Group>
       </Modal.Body>
 
-    
-    <Modal.Footer className="d-flex justify-content-between align-items-center">
-  <div>
-    <Button
-      variant="outline-info"
-      onClick={() => {
-        navigate(`/students?view=${student._id}`);
-      }}
-      disabled={loading}
-    >
-      See Logs
-    </Button>
-  </div>
-  <div>
-    <Button variant="secondary" onClick={handleClose} disabled={loading}>
-      Close
-    </Button>
-    <Button
-      variant={isRegisteredSubject ? "primary" : "success"}
-      onClick={handleSave}
-      disabled={loading}
-      className="ms-2"
-    >
-      {loading ? (
-        <>
-          <Spinner animation="border" size="sm" /> Saving...
-        </>
-      ) : isRegisteredSubject ? (
-        "Save Status"
-      ) : (
-        "New Status"
-      )}
-    </Button>
-  </div>
-</Modal.Footer>
-
+      {/* Footer */}
+      <Modal.Footer className="d-flex justify-content-between align-items-center">
+        <div>
+          <Button
+            variant="outline-info"
+            onClick={() => {
+              navigate(`/students?view=${student._id}`);
+            }}
+            disabled={loading}
+          >
+            See Logs
+          </Button>
+        </div>
+        <div>
+          <Button variant="secondary" onClick={handleClose} disabled={loading}>
+            Close
+          </Button>
+          <Button
+            variant={isRegisteredSubject ? "primary" : "success"}
+            onClick={handleSave}
+            disabled={loading}
+            className="ms-2"
+          >
+            {loading ? (
+              <>
+                <Spinner animation="border" size="sm" /> Saving...
+              </>
+            ) : isRegisteredSubject ? (
+              "Save Status"
+            ) : (
+              "New Status"
+            )}
+          </Button>
+        </div>
+      </Modal.Footer>
 
       {/* Register Subject Modal */}
       <Modal
