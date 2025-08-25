@@ -14,6 +14,8 @@ pm2 restart homeschool-backend
 echo "Frontend: building React app..."
 cd ../client
 npm install
+# Increase Node.js memory to 2 GB
+export NODE_OPTIONS="--max-old-space-size=2048"
 npm run build
 sudo rm -rf /var/www/homeschool/client/*
 sudo cp -r build/* /var/www/homeschool/client/
