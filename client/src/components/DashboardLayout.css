@@ -272,6 +272,9 @@
   opacity: 0.6;
   pointer-events: none;
   font-style: italic;
+  font-size: 0.875rem;
+  gap: 4px;
+  align-items: center;
 }
 .lock-icon {
   margin-left: 5px;
@@ -286,13 +289,9 @@
   }
 }
 
-.logo-h {
+/* .logo-h {
   height: 40px !important;
-}
-
-.logo-h-inner {
-  height: 60px !important;
-}
+} */
 
 .dashboard-header {
   height: 4.5rem;
@@ -665,11 +664,12 @@ span {
   background-color: var(--white);
   margin-block-start: auto;
 }
-.card-border {
-  border: 1px solid gray !important;
-}
-.over-title {
-  background: #dcdbdb;
-  border-radius: 5px;
-  padding: 8px;
+
+@media (max-width: 768px) {
+  .self-font {
+    font-size: 10px;
+  }
+  .d-footer {
+    padding: 0.5rem 1rem;
+  }
 }

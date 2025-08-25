@@ -13,6 +13,7 @@ import {
   FaSearch,
   FaBars,
   FaSignOutAlt,
+  FaRegFileAlt,
 } from "react-icons/fa";
 import axios from "axios";
 
@@ -121,8 +122,9 @@ function DashboardLayout({ children }) {
             <div className="pe-2">
               <img
                 src="/images/logo.png"
-                className="img-fluid logo-h"
+                className="img-fluid"
                 alt="Logo"
+                style={{ height: "40px" }}
               />
             </div>
             <div className="logo-text">
@@ -164,6 +166,18 @@ function DashboardLayout({ children }) {
             ) : (
               <div className="sidebar-btn-disabled">
                 <FaTrophy /> Activities <span className="lock-icon">🔒</span>
+              </div>
+            )}
+
+            {/* WorkSheet Generator: freeze if not premium/trial */}
+            {isPremiumOrTrial ? (
+              <NavLink to="/worksheets-generator">
+                <FaRegFileAlt /> Worksheet Generator
+              </NavLink>
+            ) : (
+              <div className="sidebar-btn-disabled">
+                <FaRegFileAlt /> Worksheet Generator{" "}
+                <span className="lock-icon">🔒</span>
               </div>
             )}
 
@@ -235,13 +249,13 @@ function DashboardLayout({ children }) {
         <footer className="d-footer">
           <div className="row align-items-center justify-content-between">
             <div className="col-auto">
-              <p className="mb-0">
+              <p className="mb-0 self-font">
                 © {new Date().getFullYear()} TrackMyHomeSchool. All Rights
                 Reserved.
               </p>
             </div>
             <div className="col-auto">
-              <p className="mb-0">
+              <p className="mb-0 self-font">
                 Made by <span style={{ color: "#278ca7" }}>DreamNexTech</span>
               </p>
             </div>
