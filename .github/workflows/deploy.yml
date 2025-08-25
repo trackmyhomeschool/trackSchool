@@ -2,18 +2,23 @@ name: Deploy to DigitalOcean
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main   # only run when you push to main branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
-          port: 22 
           script: |
-            /root/trackSchool/deploy.sh
+            cd /root/trackSchool
+            bash deploy.sh
