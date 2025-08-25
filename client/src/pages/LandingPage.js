@@ -75,7 +75,7 @@ function LandingPage() {
                 Track My Homeschool gives you the tools to monitor progress, log
                 learning hours, and generate transcripts all in one place.
               </p>
-              <div className="main-btn my-5">
+              <div className="main-btn my-lg-5">
                 <button
                   className="btn btn-primary my-2"
                   onClick={handleOpenRegister}
@@ -85,7 +85,7 @@ function LandingPage() {
               </div>
               <img
                 src="images/preview.png"
-                className="img-fluid mt-5 rounded-4"
+                className="img-fluid rounded-4"
               />
             </div>
           </div>
