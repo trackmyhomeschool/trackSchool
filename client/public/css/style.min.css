@@ -146,6 +146,9 @@
 .border-warning {
   border-color: #eea47f !important;
 }
+.logo-h-inner {
+    height: 60px!important;
+}
 .btn-outline-warning {
   color: #eea47f !important;
   border: 1px solid #eea47f !important;

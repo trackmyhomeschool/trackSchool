@@ -23,6 +23,7 @@ import AdminEditStatePage from "./pages/admin/AdminEditStatePage";
 import AdminResourceManagerPage from './pages/admin/AdminResourceManagerPage';
 import RoleBasedNotFound from "./pages/RoleBasedNotFound";
 import ProtectedRoute from './components/ProtectedRoute';
+import WorksheetGenerator from './components/WorksheetGenerator';
 
 function App() {
   return (
@@ -94,6 +95,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["user"]}>
               <ActivitiesPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/worksheets-generator"
+          element={
+            <ProtectedRoute allowedRoles={["user"]}>
+              <WorksheetGenerator />
             </ProtectedRoute>
           }
         />
