@@ -3,6 +3,17 @@ set -e
 
 cd /root/trackSchool
 
+echo "Checking if only deploy.sh changed..."
+changed_files=$(git diff --name-only HEAD..origin/main)
+
+if [[ "$changed_files" == "deploy.sh" ]]; then
+  echo "Only deploy.sh changed. Updating script..."
+  git pull origin main
+  chmod +x deploy.sh
+  echo "DONE: deploy.sh updated at $(date)"
+  exit 0
+fi
+
 echo "Pulling latest code..."
 git pull origin main
 
