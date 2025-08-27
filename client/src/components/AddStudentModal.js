@@ -53,8 +53,11 @@ function AddStudentModal({ show, handleClose, onStudentAdded }) {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.size > 2 * 1024 * 1024) {
-      setError("File size must be less than 2MB. Please upload a smaller image.");
+    if (file && file.size > 10 * 1024 * 1024) {
+      // 10MB limit
+      setError(
+        "File size must be less than 10MB. Please upload a smaller image."
+      );
       e.target.value = null;
       setFormData((prev) => ({ ...prev, profilePicture: null }));
     } else {
@@ -281,7 +284,7 @@ function AddStudentModal({ show, handleClose, onStudentAdded }) {
               onChange={handleImageChange}
             />
             <Form.Text className="text-muted">
-              (Max size: 2MB. If none, default image will be used.)
+              (Max size: 10MB. If none, default image will be used.)
             </Form.Text>
           </Form.Group>
           {error && <p className="text-danger">{error}</p>}

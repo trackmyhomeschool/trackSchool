@@ -68,9 +68,9 @@ function EditStudentModal({ show, handleClose, student, onStudentUpdated }) {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.size > 2 * 1024 * 1024) {
+    if (file && file.size > 10 * 1024 * 1024) {
       setError(
-        "File size must be less than 2MB. Please upload a smaller image."
+        "File size must be less than 10MB. Please upload a smaller image."
       );
       e.target.value = null;
       setFormData((prev) => ({ ...prev, profilePicture: null }));
@@ -149,7 +149,7 @@ function EditStudentModal({ show, handleClose, student, onStudentUpdated }) {
         err.response.data.message.includes("2MB")
       ) {
         setError(
-          "File size must be less than 2MB. Please upload a smaller image."
+          "File size must be less than 10MB. Please upload a smaller image."
         );
       } else {
         setError(err.response?.data?.message || "Failed to update student");
@@ -296,7 +296,7 @@ function EditStudentModal({ show, handleClose, student, onStudentUpdated }) {
               onChange={handleImageChange}
             />
             <Form.Text className="text-muted">
-              (Max size: 2MB. Leave empty to keep existing picture.)
+              (Max size: 10MB. Leave empty to keep existing picture.)
             </Form.Text>
           </Form.Group>
           {/* Error Message */}
