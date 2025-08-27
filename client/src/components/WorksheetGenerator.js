@@ -89,12 +89,16 @@ export default function WorksheetGenerator() {
           Math.floor(Math.random() * (lowerRange.max - lowerRange.min + 1)) +
           lowerRange.min;
       } else {
-        num1 = Math.floor(
-          Math.random() * Math.pow(10, digits - 1) + Math.pow(10, digits - 1)
-        );
-        num2 = Math.floor(
-          Math.random() * Math.pow(10, digits - 1) + Math.pow(10, digits - 1)
-        );
+        if (digits === 1) {
+          // one-digit numbers (0–9)
+          num1 = Math.floor(Math.random() * 10);
+          num2 = Math.floor(Math.random() * 10);
+        } else {
+          const min = Math.pow(10, digits - 1);
+          const max = Math.pow(10, digits) - 1;
+          num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+          num2 = Math.floor(Math.random() * (max - min + 1)) + min;
+        }
       }
 
       let answer;
