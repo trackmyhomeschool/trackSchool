@@ -424,7 +424,7 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="dashboard"
-        className="btn btn-success w-100"
+        className="btn btn-blue-self w-100"
         onClick={() => navigate("/dashboard")}
       >
         Go to Dashboard
@@ -437,7 +437,7 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="trial"
-        className="btn btn-success w-100 "
+        className="btn btn-blue-self w-100 "
         disabled={trialLoading}
         onClick={startTrial}
         style={{ minWidth: 165 }}
@@ -459,7 +459,7 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="dashboard"
-        className="btn btn-success w-100"
+        className="btn btn-blue-self w-100"
         onClick={() => navigate("/dashboard")}
       >
         Go to Dashboard
@@ -479,7 +479,7 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="buy"
-        className="btn btn-success w-100"
+        className="btn btn-blue-self w-100"
         style={{ minWidth: 165 }}
         onClick={() => setModalOpen(true)}
       >
@@ -580,7 +580,7 @@ const UpgradePremiumPage = () => {
         {/* Section Heading */}
         <div className="row justify-content-center mb-5 text-center">
           <div className="col-lg-8">
-            <h1 className="fw-bold text-success mb-3">Upgrade to Premium</h1>
+            <h1 className="fw-bold text-blue-self mb-3">Upgrade to Premium</h1>
             <p className="text-muted fs-5">
               Unlock powerful tools to manage your homeschool effectively.
               Choose a plan that fits your needs and enjoy unlimited access to
@@ -597,20 +597,20 @@ const UpgradePremiumPage = () => {
             <div className="card shadow rounded-4 subscription-active h-100">
               <div className="card-body text-center p-4">
                 <FaCheckCircle color="#44c878" size={50} className="mb-3" />
-                <h3 className="fw-bold text-success mb-2">{title}</h3>
+                <h3 className="fw-bold text-blue-self mb-2">{title}</h3>
                 <p className="text-muted">{desc}</p>
                 {dateBox}
                 {note && <p className="small text-secondary mt-2">{note}</p>}
 
                 {/* Benefits */}
                 <div className="benefits-box mt-4 text-start">
-                  <h6 className="fw-semibold text-success mb-3">
+                  <h6 className="fw-semibold text-blue-self mb-3">
                     Your Premium Benefits
                   </h6>
                   <ul className="list-unstyled mb-0">
                     {premiumBenefits.map((b, i) => (
                       <li key={i} className="mb-2 d-flex align-items-center">
-                        <FaCheckCircle className="me-2 text-success" />
+                        <FaCheckCircle className="me-2 text-blue-self" />
                         {b}
                       </li>
                     ))}
@@ -629,55 +629,55 @@ const UpgradePremiumPage = () => {
           <div className="col-md-4">
             <div className="card shadow-sm subscription-card border-success rounded-4 h-100 subscription-active">
               <div className="card-body text-center p-4 d-flex flex-column">
-                <h3 className="fw-bold text-success mb-2">Monthly Plan</h3>
+                <h3 className="fw-bold text-blue-self mb-2">Monthly Plan</h3>
                 <p>
                   Enjoy full access to all features with the best value monthly
                   plan.
                 </p>
                 <p className="subscription-price mb-2">
-                  <span className="fw-bold fs-3 text-success">$2.99</span>
+                  <span className="fw-bold fs-3 text-blue-self">$2.99</span>
                   <span className="subscription-badge">/month</span>
                 </p>
 
                 <div className="benefits-box mt-3 text-start flex-grow-1">
-                  <h6 className="fw-semibold text-success mb-3">
+                  <h6 className="fw-semibold text-blue-self mb-3">
                     Premium Benefits
                   </h6>
                   <ul className="list-unstyled">
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Unlimited
-                      students & courses
+                      <FaCheckCircle className="me-2 text-blue-self" />{" "}
+                      Unlimited students & courses
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Advanced
+                      <FaCheckCircle className="me-2 text-blue-self" /> Advanced
                       reporting
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Curriculum
-                      planning tools
+                      <FaCheckCircle className="me-2 text-blue-self" />{" "}
+                      Curriculum planning tools
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Compliance
-                      tracking
+                      <FaCheckCircle className="me-2 text-blue-self" />{" "}
+                      Compliance tracking
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Priority
+                      <FaCheckCircle className="me-2 text-blue-self" /> Priority
                       support
                     </li>
                     {/* Extra content for balance */}
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Cancel
+                      <FaCheckCircle className="me-2 text-blue-self" /> Cancel
                       anytime, no hidden fees
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Perfect
+                      <FaCheckCircle className="me-2 text-blue-self" /> Perfect
                       for short-term use
                     </li>
                   </ul>
                 </div>
 
                 <button
-                  className="btn btn-success w-100 mt-4"
+                  className="btn btn-blue-self w-100 mt-4"
                   onClick={async () => {
                     try {
                       const res = await axios.post(
@@ -701,7 +701,7 @@ const UpgradePremiumPage = () => {
           <div className="col-md-4">
             <div className="card shadow-sm subscription-card border-success rounded-4 h-100 subscription-active">
               <div className="card-body text-center p-4 d-flex flex-column">
-                <h3 className="fw-bold text-success mb-2">
+                <h3 className="fw-bold text-blue-self mb-2">
                   Yearly Plan{" "}
                   <span className="badge bg-success ms-2">Best Value</span>
                 </h3>
@@ -710,49 +710,49 @@ const UpgradePremiumPage = () => {
                   Save over 33%
                 </p>
                 <p className="subscription-price mb-2">
-                  <span className="fw-bold fs-3 text-success">$20</span>
+                  <span className="fw-bold fs-3 text-blue-self">$20</span>
                   <span className="subscription-badge">/year</span>
                 </p>
 
                 <div className="benefits-box mt-3 text-start flex-grow-1">
-                  <h6 className="fw-semibold text-success mb-3">
+                  <h6 className="fw-semibold text-blue-self mb-3">
                     Premium Benefits
                   </h6>
                   <ul className="list-unstyled">
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Unlimited
-                      students & courses
+                      <FaCheckCircle className="me-2 text-blue-self" />{" "}
+                      Unlimited students & courses
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Advanced
+                      <FaCheckCircle className="me-2 text-blue-self" /> Advanced
                       reporting
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Curriculum
-                      planning tools
+                      <FaCheckCircle className="me-2 text-blue-self" />{" "}
+                      Curriculum planning tools
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Compliance
-                      tracking
+                      <FaCheckCircle className="me-2 text-blue-self" />{" "}
+                      Compliance tracking
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Priority
+                      <FaCheckCircle className="me-2 text-blue-self" /> Priority
                       support
                     </li>
                     {/* Extra content for balance */}
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> Save over
-                      40% compared to monthly
+                      <FaCheckCircle className="me-2 text-blue-self" /> Save
+                      over 40% compared to monthly
                     </li>
                     <li>
-                      <FaCheckCircle className="me-2 text-success" /> One-time
+                      <FaCheckCircle className="me-2 text-blue-self" /> One-time
                       payment, full-year access
                     </li>
                   </ul>
                 </div>
 
                 <button
-                  className="btn btn-outline-success w-100 mt-4 text-white"
+                  className="btn btn-blue-success-self w-100 mt-4 text-white"
                   onClick={async () => {
                     try {
                       const res = await axios.post(

@@ -1,15 +1,14 @@
-
 .subscription-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .subscription-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .subscription-active {
-  background: linear-gradient(135deg, #e6fff3, #ffffff);
-  border-left: 5px solid #44c878;
+  /* background: linear-gradient(135deg, #e6fff3, #ffffff); */
+  border-left: 5px solid #096f8f !important;
 }
 
 .subscription-price {
@@ -26,4 +25,24 @@
   border: 1px solid #e9ecef;
   border-radius: 10px;
   padding: 15px;
+}
+
+.btn-blue-self {
+  background-color: #1495b6;
+  color: white;
+}
+
+.text-blue-self {
+  color: #1495b6;
+}
+
+.btn-blue-success-self {
+  color: #1495b6 !important;
+  border: 1px solid #1495b6 !important;
+}
+
+.btn-blue-success-self:hover {
+  background-color: #1495b6;
+  color: white !important;
+  border: 1px solid #1495b6 !important;
 }
