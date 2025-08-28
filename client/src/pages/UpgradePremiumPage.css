@@ -1,24 +1,29 @@
-.btn {
-  display: inline-block;
-  border: none;
-  border-radius: 7px;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 10px 22px;
-  cursor: pointer;
-  background: #20a35e;
-  color: #fff;
-  transition: background 0.18s;
+
+.subscription-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.btn:hover {
-  background: #15904f;
+.subscription-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
-.btn-outline {
-  background: #fff;
-  border: 1.2px solid #b2e8cc;
-  color: #1d8f57;
+
+.subscription-active {
+  background: linear-gradient(135deg, #e6fff3, #ffffff);
+  border-left: 5px solid #44c878;
 }
-.btn-outline:hover {
-  background: #f4fffa;
-  border-color: #20a35e;
+
+.subscription-price {
+  font-size: 1.1rem;
+}
+.subscription-badge {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-left: 4px;
+}
+
+.benefits-box {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 15px;
 }

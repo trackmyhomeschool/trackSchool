@@ -1,30 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { FaCheckCircle, FaCalendarAlt, FaDollarSign, FaTimesCircle } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaCalendarAlt,
+  FaDollarSign,
+  FaTimesCircle,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import DashboardLayout from "../components/DashboardLayout";
+import "./UpgradePremiumPage.css";
 
 // Modal for selecting subscription
 function PlanModal({ open, onClose, onSelect }) {
   if (!open) return null;
   return (
-    <div style={{
-      position: "fixed", left: 0, top: 0, width: "100vw", height: "100vh",
-      background: "rgba(0,0,0,0.22)", zIndex: 1002, display: "flex",
-      alignItems: "center", justifyContent: "center"
-    }}>
-      <div style={{
-        background: "#fff", borderRadius: 14, minWidth: 310, maxWidth: 350, boxShadow: "0 2px 28px rgba(36,88,40,0.12)",
-        padding: 28, position: "relative", textAlign: "center"
-      }}>
+    <div
+      style={{
+        position: "fixed",
+        left: 0,
+        top: 0,
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(0,0,0,0.22)",
+        zIndex: 1002,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 14,
+          minWidth: 310,
+          maxWidth: 350,
+          boxShadow: "0 2px 28px rgba(36,88,40,0.12)",
+          padding: 28,
+          position: "relative",
+          textAlign: "center",
+        }}
+      >
         <FaTimesCircle
           onClick={onClose}
           style={{
-            position: "absolute", top: 11, right: 13, color: "#aaa", fontSize: 19, cursor: "pointer"
+            position: "absolute",
+            top: 11,
+            right: 13,
+            color: "#aaa",
+            fontSize: 19,
+            cursor: "pointer",
           }}
           title="Close"
         />
-        <h3 style={{ color: "#21884f", fontWeight: 700, fontSize: 19, margin: "0 0 10px" }}>Choose Your Subscription</h3>
+        <h3
+          style={{
+            color: "#21884f",
+            fontWeight: 700,
+            fontSize: 19,
+            margin: "0 0 10px",
+          }}
+        >
+          Choose Your Subscription
+        </h3>
         <p style={{ color: "#555", fontSize: 14, margin: 0, marginBottom: 20 }}>
           Your first 4 days are <b>free</b>. Cancel anytime.
         </p>
@@ -32,39 +69,67 @@ function PlanModal({ open, onClose, onSelect }) {
           <button
             onClick={() => onSelect("monthly")}
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              gap: 11, background: "#20a35e", color: "#fff", fontWeight: 600,
-              fontSize: 16, border: "none", borderRadius: 8, padding: "13px 0", cursor: "pointer",
-              boxShadow: "0 2px 5px rgba(32,163,94,0.07)"
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 11,
+              background: "#20a35e",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 16,
+              border: "none",
+              borderRadius: 8,
+              padding: "13px 0",
+              cursor: "pointer",
+              boxShadow: "0 2px 5px rgba(32,163,94,0.07)",
             }}
           >
-            <FaDollarSign /> $2.99 <span style={{
-              background: "#fff3",
-              color: "#e4fff3",
-              fontWeight: 400,
-              fontSize: 14,
-              borderRadius: 4,
-              marginLeft: 5,
-              padding: "2px 6px"
-            }}>per month</span>
+            <FaDollarSign /> $2.99{" "}
+            <span
+              style={{
+                background: "#fff3",
+                color: "#e4fff3",
+                fontWeight: 400,
+                fontSize: 14,
+                borderRadius: 4,
+                marginLeft: 5,
+                padding: "2px 6px",
+              }}
+            >
+              per month
+            </span>
           </button>
           <button
             onClick={() => onSelect("yearly")}
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              gap: 11, background: "#e5f8ee", color: "#20a35e", fontWeight: 600,
-              fontSize: 16, border: "none", borderRadius: 8, padding: "13px 0", cursor: "pointer"
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 11,
+              background: "#e5f8ee",
+              color: "#20a35e",
+              fontWeight: 600,
+              fontSize: 16,
+              border: "none",
+              borderRadius: 8,
+              padding: "13px 0",
+              cursor: "pointer",
             }}
           >
-            <FaDollarSign /> $20 <span style={{
-              background: "#c5edd9",
-              color: "#21884f",
-              fontWeight: 400,
-              fontSize: 14,
-              borderRadius: 4,
-              marginLeft: 5,
-              padding: "2px 6px"
-            }}>per year</span>
+            <FaDollarSign /> $20{" "}
+            <span
+              style={{
+                background: "#c5edd9",
+                color: "#21884f",
+                fontWeight: 400,
+                fontSize: 14,
+                borderRadius: 4,
+                marginLeft: 5,
+                padding: "2px 6px",
+              }}
+            >
+              per year
+            </span>
           </button>
         </div>
         <div style={{ marginTop: 19, color: "#888", fontSize: 12 }}>
@@ -79,24 +144,52 @@ function PlanModal({ open, onClose, onSelect }) {
 function CancelModal({ open, onClose, onConfirm, loading }) {
   if (!open) return null;
   return (
-    <div style={{
-      position: "fixed", left: 0, top: 0, width: "100vw", height: "100vh",
-      background: "rgba(0,0,0,0.23)", zIndex: 1003, display: "flex",
-      alignItems: "center", justifyContent: "center"
-    }}>
-      <div style={{
-        background: "#fff", borderRadius: 14, minWidth: 330, maxWidth: 390,
-        boxShadow: "0 2px 28px rgba(36,88,40,0.13)",
-        padding: 32, position: "relative", textAlign: "center"
-      }}>
+    <div
+      style={{
+        position: "fixed",
+        left: 0,
+        top: 0,
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(0,0,0,0.23)",
+        zIndex: 1003,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 14,
+          minWidth: 330,
+          maxWidth: 390,
+          boxShadow: "0 2px 28px rgba(36,88,40,0.13)",
+          padding: 32,
+          position: "relative",
+          textAlign: "center",
+        }}
+      >
         <FaTimesCircle
           onClick={onClose}
           style={{
-            position: "absolute", top: 13, right: 17, color: "#aaa", fontSize: 22, cursor: "pointer"
+            position: "absolute",
+            top: 13,
+            right: 17,
+            color: "#aaa",
+            fontSize: 22,
+            cursor: "pointer",
           }}
           title="Close"
         />
-        <h3 style={{ color: "#c0392b", fontWeight: 700, fontSize: 20, margin: "0 0 12px" }}>
+        <h3
+          style={{
+            color: "#c0392b",
+            fontWeight: 700,
+            fontSize: 20,
+            margin: "0 0 12px",
+          }}
+        >
           Cancel Subscription
         </h3>
         <p style={{ color: "#444", fontSize: 15, marginBottom: 21 }}>
@@ -106,9 +199,15 @@ function CancelModal({ open, onClose, onConfirm, loading }) {
         <button
           onClick={onConfirm}
           style={{
-            background: "#c0392b", color: "#fff", fontWeight: 700,
-            fontSize: 16, border: "none", borderRadius: 8, padding: "12px 34px", cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.6 : 1
+            background: "#c0392b",
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: 16,
+            border: "none",
+            borderRadius: 8,
+            padding: "12px 34px",
+            cursor: loading ? "not-allowed" : "pointer",
+            opacity: loading ? 0.6 : 1,
           }}
           disabled={loading}
         >
@@ -118,8 +217,15 @@ function CancelModal({ open, onClose, onConfirm, loading }) {
           <button
             onClick={onClose}
             style={{
-              background: "#eee", color: "#888", fontWeight: 500,
-              fontSize: 14, border: "none", borderRadius: 7, padding: "8px 20px", marginTop: 5, cursor: "pointer"
+              background: "#eee",
+              color: "#888",
+              fontWeight: 500,
+              fontSize: 14,
+              border: "none",
+              borderRadius: 7,
+              padding: "8px 20px",
+              marginTop: 5,
+              cursor: "pointer",
             }}
           >
             No, Keep Premium
@@ -133,7 +239,11 @@ function CancelModal({ open, onClose, onConfirm, loading }) {
 const getStatus = (user) => {
   if (!user) return { status: "loading" };
   const now = new Date();
-  if (user.isSubscribed && user.subscriptionStatus === "active" && user.cancelAtPeriodEnd) {
+  if (
+    user.isSubscribed &&
+    user.subscriptionStatus === "active" &&
+    user.cancelAtPeriodEnd
+  ) {
     // Canceled but still premium until end of period
     return {
       status: "canceled",
@@ -173,7 +283,10 @@ const UpgradePremiumPage = () => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/me`, { withCredentials: true });
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/users/me`,
+        { withCredentials: true }
+      );
       setUser(res.data);
     } catch (err) {
       setUser(null);
@@ -192,7 +305,11 @@ const UpgradePremiumPage = () => {
   const startTrial = async () => {
     setTrialLoading(true);
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/users/start-trial`, {}, { withCredentials: true });
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users/start-trial`,
+        {},
+        { withCredentials: true }
+      );
       await fetchUser();
     } catch (err) {
       alert("Could not start trial. " + (err.response?.data?.message || ""));
@@ -203,11 +320,17 @@ const UpgradePremiumPage = () => {
   const cancelSubscription = async () => {
     setCancelLoading(true);
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/payments/cancel-subscription`, {}, { withCredentials: true });
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/payments/cancel-subscription`,
+        {},
+        { withCredentials: true }
+      );
       await fetchUser();
       setCancelModal(false);
     } catch (err) {
-      alert("Could not cancel subscription. " + (err.response?.data?.message || ""));
+      alert(
+        "Could not cancel subscription. " + (err.response?.data?.message || "")
+      );
       setCancelModal(false);
     }
     setCancelLoading(false);
@@ -270,7 +393,12 @@ const UpgradePremiumPage = () => {
       <button
         key="cancel"
         className="btn btn-outline"
-        style={{ marginLeft: 10, border: '1.3px solid #e74c3c', color: '#e74c3c', fontWeight: 600 }}
+        style={{
+          marginLeft: 10,
+          border: "1.3px solid #e74c3c",
+          color: "#e74c3c",
+          fontWeight: 600,
+        }}
         onClick={() => setCancelModal(true)}
       >
         Cancel Subscription
@@ -280,11 +408,12 @@ const UpgradePremiumPage = () => {
         onClose={() => setCancelModal(false)}
         onConfirm={cancelSubscription}
         loading={cancelLoading}
-      />
+      />,
     ];
   } else if (status === "canceled") {
     title = "Subscription Cancelled";
-    desc = "You have cancelled your premium subscription. You will lose premium access after the date below.";
+    desc =
+      "You have cancelled your premium subscription. You will lose premium access after the date below.";
     note = "You will not be charged again.";
     dateBox = until ? (
       <div className="trial-date-box" style={{ color: "#e74c3c" }}>
@@ -295,11 +424,11 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="dashboard"
-        className="btn btn-primary"
+        className="btn btn-success w-100"
         onClick={() => navigate("/dashboard")}
       >
         Go to Dashboard
-      </button>
+      </button>,
     ];
   } else if (status === "not_started") {
     // User never started trial
@@ -308,7 +437,7 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="trial"
-        className="btn btn-primary"
+        className="btn btn-success w-100 "
         disabled={trialLoading}
         onClick={startTrial}
         style={{ minWidth: 165 }}
@@ -318,7 +447,8 @@ const UpgradePremiumPage = () => {
     ];
   } else if (status === "trial") {
     title = "Free Trial Activated!";
-    desc = "Your free trial is now active. You have access to all premium features for a limited period.";
+    desc =
+      "Your free trial is now active. You have access to all premium features for a limited period.";
     note = "After your trial ends, you'll be asked to subscribe.";
     dateBox = (
       <div className="trial-date-box">
@@ -329,7 +459,7 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="dashboard"
-        className="btn btn-primary"
+        className="btn btn-success w-100"
         onClick={() => navigate("/dashboard")}
       >
         Go to Dashboard
@@ -338,7 +468,8 @@ const UpgradePremiumPage = () => {
   } else {
     // trial_expired
     title = "Your Trial Ended";
-    desc = "Your free trial has expired. To continue using premium features, please subscribe.";
+    desc =
+      "Your free trial has expired. To continue using premium features, please subscribe.";
     dateBox = (
       <div className="trial-date-box" style={{ color: "#e74c3c" }}>
         <FaCalendarAlt style={{ marginRight: 8 }} />
@@ -348,36 +479,18 @@ const UpgradePremiumPage = () => {
     actions = [
       <button
         key="buy"
-        className="btn btn-primary"
+        className="btn btn-success w-100"
         style={{ minWidth: 165 }}
         onClick={() => setModalOpen(true)}
       >
         Buy Subscription
       </button>,
-      <PlanModal
-        key="modal"
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSelect={async (plan) => {
-          setModalOpen(false);
-          try {
-            const res = await axios.post(
-              `${process.env.REACT_APP_API_URL}/api/payments/create-checkout-session`,
-              { plan },
-              { withCredentials: true }
-            );
-            window.location.href = res.data.url;
-          } catch (err) {
-            alert("Payment setup failed. Please try again.");
-          }
-        }}
-      />
     ];
   }
 
   return (
     <DashboardLayout>
-      <div
+      {/* <div
         style={{
           minHeight: "calc(100vh - 70px)",
           display: "flex",
@@ -462,7 +575,222 @@ const UpgradePremiumPage = () => {
             {actions}
           </div>
         </div>
+      </div> */}
+      <div className="container py-5">
+        {/* Section Heading */}
+        <div className="row justify-content-center mb-5 text-center">
+          <div className="col-lg-8">
+            <h1 className="fw-bold text-success mb-3">Upgrade to Premium</h1>
+            <p className="text-muted fs-5">
+              Unlock powerful tools to manage your homeschool effectively.
+              Choose a plan that fits your needs and enjoy unlimited access to
+              all premium features including reporting, curriculum planning, and
+              priority support.
+            </p>
+          </div>
+        </div>
+
+        {/* Subscription Plan Cards */}
+        <div className="row justify-content-center g-4">
+          {/* Free / Active Plan */}
+          <div className="col-md-4">
+            <div className="card shadow rounded-4 subscription-active h-100">
+              <div className="card-body text-center p-4">
+                <FaCheckCircle color="#44c878" size={50} className="mb-3" />
+                <h3 className="fw-bold text-success mb-2">{title}</h3>
+                <p className="text-muted">{desc}</p>
+                {dateBox}
+                {note && <p className="small text-secondary mt-2">{note}</p>}
+
+                {/* Benefits */}
+                <div className="benefits-box mt-4 text-start">
+                  <h6 className="fw-semibold text-success mb-3">
+                    Your Premium Benefits
+                  </h6>
+                  <ul className="list-unstyled mb-0">
+                    {premiumBenefits.map((b, i) => (
+                      <li key={i} className="mb-2 d-flex align-items-center">
+                        <FaCheckCircle className="me-2 text-success" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Actions */}
+                <div className="d-flex justify-content-center gap-2 mt-4">
+                  {actions}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly Plan */}
+          <div className="col-md-4">
+            <div className="card shadow-sm subscription-card border-success rounded-4 h-100 subscription-active">
+              <div className="card-body text-center p-4 d-flex flex-column">
+                <h3 className="fw-bold text-success mb-2">Monthly Plan</h3>
+                <p>
+                  Enjoy full access to all features with the best value monthly
+                  plan.
+                </p>
+                <p className="subscription-price mb-2">
+                  <span className="fw-bold fs-3 text-success">$2.99</span>
+                  <span className="subscription-badge">/month</span>
+                </p>
+
+                <div className="benefits-box mt-3 text-start flex-grow-1">
+                  <h6 className="fw-semibold text-success mb-3">
+                    Premium Benefits
+                  </h6>
+                  <ul className="list-unstyled">
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Unlimited
+                      students & courses
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Advanced
+                      reporting
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Curriculum
+                      planning tools
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Compliance
+                      tracking
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Priority
+                      support
+                    </li>
+                    {/* Extra content for balance */}
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Cancel
+                      anytime, no hidden fees
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Perfect
+                      for short-term use
+                    </li>
+                  </ul>
+                </div>
+
+                <button
+                  className="btn btn-success w-100 mt-4"
+                  onClick={async () => {
+                    try {
+                      const res = await axios.post(
+                        `${process.env.REACT_APP_API_URL}/api/payments/create-checkout-session`,
+                        { plan: "monthly" }, // 👈 directly pass monthly
+                        { withCredentials: true }
+                      );
+                      window.location.href = res.data.url; // redirect to checkout
+                    } catch (err) {
+                      alert("Payment setup failed. Please try again.");
+                    }
+                  }}
+                >
+                  Choose Monthly
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Yearly Plan */}
+          <div className="col-md-4">
+            <div className="card shadow-sm subscription-card border-success rounded-4 h-100 subscription-active">
+              <div className="card-body text-center p-4 d-flex flex-column">
+                <h3 className="fw-bold text-success mb-2">
+                  Yearly Plan{" "}
+                  <span className="badge bg-success ms-2">Best Value</span>
+                </h3>
+                <p>
+                  Run production apps with full functionality in best price.
+                  Save over 33%
+                </p>
+                <p className="subscription-price mb-2">
+                  <span className="fw-bold fs-3 text-success">$20</span>
+                  <span className="subscription-badge">/year</span>
+                </p>
+
+                <div className="benefits-box mt-3 text-start flex-grow-1">
+                  <h6 className="fw-semibold text-success mb-3">
+                    Premium Benefits
+                  </h6>
+                  <ul className="list-unstyled">
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Unlimited
+                      students & courses
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Advanced
+                      reporting
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Curriculum
+                      planning tools
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Compliance
+                      tracking
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Priority
+                      support
+                    </li>
+                    {/* Extra content for balance */}
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> Save over
+                      40% compared to monthly
+                    </li>
+                    <li>
+                      <FaCheckCircle className="me-2 text-success" /> One-time
+                      payment, full-year access
+                    </li>
+                  </ul>
+                </div>
+
+                <button
+                  className="btn btn-outline-success w-100 mt-4 text-white"
+                  onClick={async () => {
+                    try {
+                      const res = await axios.post(
+                        `${process.env.REACT_APP_API_URL}/api/payments/create-checkout-session`,
+                        { plan: "yearly" }, // 👈 directly pass yearly
+                        { withCredentials: true }
+                      );
+                      window.location.href = res.data.url; // redirect to checkout
+                    } catch (err) {
+                      alert("Payment setup failed. Please try again.");
+                    }
+                  }}
+                >
+                  Choose Yearly
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <PlanModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSelect={async (plan) => {
+          setModalOpen(false);
+          try {
+            const res = await axios.post(
+              `${process.env.REACT_APP_API_URL}/api/payments/create-checkout-session`,
+              { plan },
+              { withCredentials: true }
+            );
+            window.location.href = res.data.url;
+          } catch (err) {
+            alert("Payment setup failed. Please try again.");
+          }
+        }}
+      />
     </DashboardLayout>
   );
 };
