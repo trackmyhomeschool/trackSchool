@@ -208,9 +208,11 @@ function ViewStudentModal({ show, handleClose, student }) {
               const allLogs = [];
               subjects.forEach((subject) => {
                 (subject.dailyLogs || []).forEach((log) => {
+                  const d = new Date(log.logDate);
                   allLogs.push({
                     subjectName: subject.subjectName,
-                    date: new Date(log.logDate).toISOString().split("T")[0],
+                    // ✅ if invalid or missing, use empty string
+                    date: isNaN(d) ? "" : d.toISOString().split("T")[0],
                     comment: log.comment,
                     percentOrStatus: isPrimaryStudent
                       ? log.status === "pass"
